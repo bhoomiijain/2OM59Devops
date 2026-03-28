@@ -1,124 +1,63 @@
-# 6. Image Registries & Distribution
+# Image Registries (Docker Hub etc)
 
-## What is an Image Registry?
+## What = Registry?
 
-An **Image Registry** is a **centralized repository** used to store, manage, version, and distribute container images.
+Storage for images. Like GitHub but for containers.
 
-> Similar to:
-> - **GitHub** → for source code
-> - **Maven Central** → for Java libraries
-> - **Docker Hub** → for container images
-
----
-
-## Why Registries are Needed
-
-| Without Registry | With Registry |
-|-----------------|---------------|
-| Each system must build images independently | Build once, deploy everywhere |
-| High inconsistency across environments | Version-controlled environments |
-| Manual software installation | Faster deployments |
-| No version control of environments | Rollback capability |
+**Registries:**
+- Docker Hub (main one, free)
+- AWS ECR
+- Google Container Registry
+- Azure ACR
+- Private registries (company)
 
 ---
 
-## What a Registry Enables:
-- Sharing images across teams and environments
-- Consistent deployment in development, testing, and production
-- Integration with CI/CD pipelines
-- Registry acts as the **bridge between CI and CD**
+## Public vs Private
+
+**Public:** Anyone can pull (no password)
+- Free
+- Base images (python, ubuntu, mysql...)
+- Open source stuff
+- Example: Docker Hub
+
+**Private:** Need auth
+- Company images
+- Proprietary code
+- Control who sees what
+- AWS ECR, Azure ACR
 
 ---
 
-## Types of Image Registries
+## Docker Hub
 
-### 1. Public Image Registries
-**Open access** to images — anyone can pull.
+Official registry
 
-**Characteristics:**
-- Images are publicly visible
-- Anyone can pull images
-- Often free
-- Used for base images and open-source apps
+Format: `username/image:tag`
 
-**Example:** Docker Hub (free public repos)
+Example: `bhoomiijain/myapp:v1`
 
-### 2. Private Image Registries
-**Restricted access** using authentication & authorization.
+**Tags:**
+- `latest` = newest
+- `v1`, `v2` = versions
+- `prod`, `dev`, `qa` = environments
 
-**Characteristics:**
-- Secure and controlled access
-- Used in enterprises
-- Stores proprietary applications
-- Integrated with IAM and RBAC
+## Push & Pull
 
-**Examples:**
-- AWS Elastic Container Registry (ECR)
-- Azure Container Registry (ACR)
-- GitHub Container Registry (GHCR)
-- On-premise private registry
-
----
-
-## Image Naming Convention
-
+**Push:** upload to registry
 ```
-<registry>/<namespace>/<image>:<tag>
+docker push bhoomiijain/myapp:v1
 ```
 
-| Part | Meaning | Example |
-|------|---------|---------|
-| registry | Location of registry | `docker.io` |
-| namespace | User/organization name | `bhoomiijain` |
-| image | Name of the application | `webapp` |
-| tag | Version or label | `v1`, `latest` |
-
-**Full example:** `docker.io/bhoomiijain/webapp:v1`
-
----
-
-## Tagging Strategies
-
-| Tag | Use Case |
-|-----|----------|
-| `latest` | Default (not recommended for production) |
-| `v1`, `v2` | Versioned releases |
-| `dev` | Development build |
-| `qa` | Testing build |
-| `prod` | Stable production build |
-
----
-
-## Image Distribution — Push & Pull
-
-### Push Operation (Developer → Registry)
-- Uploads image layers from local system to registry
-- Requires authentication
-- Only **new layers** are pushed (efficient)
-
-### Pull Operation (Registry → Server)
-- Downloads image layers from registry
-- Uses **caching** to avoid re-downloading existing layers
-- Faster on repeated deployments
-
+**Pull:** download from registry
 ```
-Developer → [docker build] → [docker push] → Registry
-Server    ← [docker pull] ← Registry
+docker pull python:3.11
 ```
 
+Only new/changed layers = efficient
+
 ---
-
-## Docker Hub — The Default Registry
-
-Docker Hub is the **centralized repository for Docker images**.
-
-**Features:**
-- Public and private repositories
-- Official images (nginx, ubuntu, mysql, etc.)
-- Automated builds
-- Important in DevOps pipelines
-
-**DockerHub** also enables **global sharing & versioning** of application images (free).
+*Practice: Create Docker Hub account and push an image*
 
 ---
 

@@ -1,79 +1,46 @@
-# 5. Container Images & Layers
+# Images & Layers
 
-## What is a Container Image?
+## Image = blueprint/template
 
-A **Container Image** is a **read-only blueprint** for creating containers.
+Read-only = doesn't change once made
 
-> Container Image = **Instructions** (blueprint)  
-> Container = **Writable layer** + executable file (the running instance)
+Contains:
+- OS (small)
+- App code
+- Libraries
+- Runtime
+- Config
 
-**A container image contains:**
-- Base OS (minimal)
-- Application code
-- Libraries & Dependencies
-- Runtime environment
-- Configuration
+**Example:** `python:3.11-slim`  
+Has Linux + Python 3.11 already
 
-**Important:** Images are **immutable** — once built, they do not change.
+When you run it → Docker makes container (adds writable top layer)
 
----
+## Layers
 
-## Real Example
-
-`python:3.11-slim` is an image that includes:
-- Minimal Linux OS
-- Python 3.11
-- Standard Python libraries
-
-When you run it → Docker creates a **container** from this image (adds a writable layer on top).
-
----
-
-## Image Layers
-
-Each image is built as a **stack of layers**.
+Image = stack of layers
 
 ```
-Layer 4: [ Application Layer ]
-Layer 3: [ Dependencies Layer ]
-Layer 2: [ Runtime Layer (Python 3.11) ]
-Layer 1: [ Base OS Layer (Linux) ]
+Layer 4: App
+Layer 3: Libraries  
+Layer 2: Python
+Layer 1: Linux
 ```
 
-**Each instruction in a Dockerfile = one layer**
+**Each Dockerfile line = 1 layer**
 
-### Properties of Layers:
-- **Immutable** — layers never change once created
-- **Cached** — Docker reuses unchanged layers (faster builds)
-- **Shared** — same layer can be reused across multiple images (saves storage)
+**Why layers matter:**
+- Immutable = once made, don't change
+- Cached = Docker reuses them (faster building)
+- Shared = same layer used in multiple images (saves space)
 
-### Benefits of Layered Architecture:
+**Good:** Faster builds, less storage, quick deployments
 
-| Benefit | How |
-|---------|-----|
-| Faster Builds | Unchanged layers are reused from cache |
-| Smaller Storage | Same layers shared between images |
-| Faster Deployment | Only missing/new layers are downloaded |
+## Copy-on-Write??
 
----
+When container edits file from lower layer = file copied to writable layer
 
-## Image vs Container
-
-| Concept | Analogy | Technical meaning |
-|---------|---------|------------------|
-| Image | Recipe book | Read-only blueprint |
-| Container | Cooked food | Running instance with writable layer |
-
----
-
-## Docker Layering & Filesystem (Union Filesystem)
-
-Docker uses a **Union Filesystem** (like OverlayFS) to:
-- Stack layers on top of each other
-- Present them as a **single unified filesystem** to the container
-- When a container modifies a file → it's written to the **top writable layer** (Copy-on-Write mechanism)
-
-**Copy-on-Write (CoW):** Files from lower (read-only) layers are **copied up** to the writable layer when modified. Original layers remain unchanged.
+Original stays unchanged
 
 ---
 

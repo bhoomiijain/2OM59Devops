@@ -1,14 +1,49 @@
-# 3. Docker Storage — Volumes & Bind Mounts
+# Docker Storage
 
-## The Problem with Container Storage
+## Problem
 
-By default, when a container is **deleted**, all data inside it is **lost**.
+Containers = temporary  
+If deleted = all data lost 😅
 
-> Containers are ephemeral (temporary) by nature.
+Need = keep data even after container gone
 
-To **persist data**, Docker provides two main storage mechanisms:
-1. **Volumes** (managed by Docker)
-2. **Bind Mounts** (managed by you)
+## Solution 1: Volumes
+
+Docker-managed storage
+
+```
+docker volume create mydata
+docker run -v mydata:/app/data myimage
+```
+
+- Stored in Docker folder
+- Data persists
+- Can share between containers
+- Production use
+
+## Solution 2: Bind Mounts
+
+Link host folder to container
+
+```
+docker run -v C:\mydata:/app/data myimage
+```
+
+- Changes sync both ways (live)
+- Development use
+- You control location
+
+## Volumes vs Bind Mounts
+
+| | Volumes | Bind Mounts |
+|---|---------|------------|
+| Managed by | Docker | You |
+| Location | Docker internal | Host path |
+| Use | Production | Development |
+| Data persists | Yes | Yes |
+
+---
+*Need to practice: Create volume and test*
 
 ---
 

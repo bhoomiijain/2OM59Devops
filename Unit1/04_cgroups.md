@@ -1,53 +1,39 @@
-# 4. Control Groups (cgroups) for Resource Limits
+# cgroups (Control Groups)
 
-## What are cgroups?
+## What = cgroups?
 
-**Control Groups (cgroups)** are a **Linux kernel feature** that limits, controls, and monitors resource usage of processes.
+Linux thing that limits resources for containers
 
-> **Namespaces = Isolate** | **cgroups = Control**
+**Namespaces** = isolation | **cgroups** = limits
 
-Without cgroups → one container could consume ALL CPU or RAM → host and other containers crash.
+Without cgroups → one container eats all CPU/RAM → everything crashes 💥
 
----
+## Why important?
 
-## Why cgroups are Critical
+Like apartment electricity:
+- Each flat (container) has a limit
+- No one tenant can use ALL power
+- Fair distribution
 
-**Real-world analogy:**  
-Think of an apartment building with an **electricity meter for each flat**.  
-Each flat has a limit — one tenant cannot use all the power in the building.
+## What cgroups control:
 
-Similarly, cgroups ensure:
-- **No container can monopolize system resources**
-- Every container gets a **fair share**
+**CPU** - maximum CPU usage  
+**Memory** - max RAM (kills container if over)  
+**Disk I/O** - read/write speed limits  
+**Network** - traffic control(?? check this)
 
----
+## Without cgroups = BAD
+- One container hogs all CPU
+- Host freezes
+- Other containers crash
 
-## Types of Resources Controlled by cgroups
-
-| Resource | What cgroups does |
-|----------|------------------|
-| **CPU** | Limits CPU usage, assigns CPU shares |
-| **Memory (RAM)** | Sets max memory; kills container if limit exceeded |
-| **Disk I/O** | Limits read/write speeds |
-| **Network** | Controls traffic (indirectly, through traffic shaping) |
-
----
-
-## What happens WITHOUT cgroups?
-
-- One container can consume **all CPU or RAM**
-- Host system becomes **unresponsive**
-- Other containers **crash**
-
-**With cgroups:**
-- Each container is **capped** at its resource limit
-- System stays **stable** even under heavy load
+## With cgroups = GOOD
+- Each container limited
+- System stable
+- Even under heavy load
 
 ---
-
-## cgroups vs Namespaces — Quick Recap
-
-| Feature | Namespaces | cgroups |
+*Teacher talked about this but too fast. Need to practice with docker itself to understand better*
 |---------|-----------|---------|
 | Purpose | Isolation — hides resources | Limits — caps usage |
 | What it does | Each container sees its own view | Controls how much resource each can use |

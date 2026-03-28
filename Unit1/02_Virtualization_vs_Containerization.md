@@ -1,63 +1,41 @@
-# 2. Virtualization vs Containerization
+# VMs vs Containers
 
-## What is Virtualization?
+## Virtualization (VMs)
 
-Virtualization is the process of **partitioning one physical server into multiple Virtual Machines (VMs)**.
+Running multiple OSes on one machine using Hypervisor
 
-**How it works:**
-- A software called **Hypervisor** divides the physical server
-- Each VM gets its own **OS, memory, and CPU**
-- Each VM acts like a completely separate physical machine
+**Setup:**
+- Hypervisor divides server
+- Each VM = full OS + memory + CPU
+- Like separate computers on same hardware
 
-```
-[ Guest OS ]  [ Guest OS ]  [ Guest OS ]
-[   VM 1   ]  [   VM 2   ]  [   VM 3   ]
-         [ Hypervisor ]
-              [ Host OS ]
-      [ H/W: network, storage, compute ]
-```
+**Good:**
+- Strong isolation
+- Can run Linux AND Windows together
+- Better space usage
+- Disaster recovery possible
 
-### Advantages of Virtualization:
-- Strong isolation between VMs
-- Can run different OS (Linux + Windows on same hardware)
-- Better hardware utilization than single-server setup
-- Better disaster recovery — infected VM can be isolated
-- Saves space and hardware cost
+**Bad:**
+- HEAVY - full OS = big size
+- Slow (takes minutes to start)
+- Expensive resource-wise
+- Too much overhead
 
-### Drawbacks of Virtualization (Why we needed containers):
-- **Heavy resource overhead** — each VM has full OS
-- **Slow boot time** — minutes to start
-- **Poor scalability** — spinning up many VMs is expensive
-- **Limited portability** — VMs are bulky
-- **High management complexity**
+## Containers (Better option)
+
+Lightweight = shares host OS instead of carrying full OS
+
+**How?**
+- Shares kernel with host
+- Only takes what app needs 
+- Starts in seconds!
+- Uses minimal resources
+- 100s of containers on same machine
+
+**KEY DIFF:** VMs = full OS each | Containers = shared kernel
 
 ---
-
-## What is Containerization?
-
-Containers are a **lightweight alternative to VMs**.
-
-**Key difference from VMs:**
-> Containers don't carry an entire OS. They use **bare minimum OS**.
-
-```
-[ app ]  [ app ]  [ app ]          [ app ]  [ app ]  [ app ]
-[libs]   [libs]   [libs]   VS      [libs]   [libs]   [libs]
-[Guest OS] [Guest OS] [Guest OS]       [ Docker Engine ]
-        [ Hypervisor ]                      [ O.S. ]
-           [ Host OS ]                  [ Infrastructure ]
-        [ Infrastructure ]
-         ← VMs →                        ← Containers →
-```
-
-### How Containers Work:
-- They **share the host OS kernel**
-- Only bring what the **application needs**
-- Start in **seconds**
-- Consume **minimal resources**
-- You can run hundreds on the same machine
-
-### Real-World Analogy:
+*Note: Teacher mentioned this but went fast... need to revise diagrams*
 | Concept | Analogy |
 |---------|---------|
 | VM | Full house with kitchen, bathroom, etc. |

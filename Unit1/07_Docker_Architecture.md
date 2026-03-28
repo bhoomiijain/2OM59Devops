@@ -1,92 +1,70 @@
-# 7. Docker Architecture & Docker Lifecycle
+# Docker Architecture & Lifecycle
 
-## Docker — Key Components
+## Main Components
 
-| Component | What it is |
-|-----------|-----------|
-| **Docker Client** | Where you type commands (terminal / CLI) |
-| **Docker Daemon (dockerd)** | The engine — processes all commands |
-| **Docker Images** | Stores all image history/layers |
-| **Containers** | Where your project actually runs |
-| **Docker Registry (Docker Hub)** | Storage of images |
+**Docker Client** = CLI (terminal where you type)  
+**Docker Daemon** = engine (does the work)  
+**Images** = read-only blueprint  
+**Containers** = running instance  
+**Docker Hub** = storage/registry  
 
----
+## How Docker Works
 
-## Docker Architecture Diagram
+You type command → CLI sends to Daemon → Daemon does stuff → result
 
-```
-Docker Client (CLI)
-        ↕ REST API
-Docker Daemon (dockerd)
-        ↓
-   Docker Host
-   ┌──────────────────────────┐
-   │  Images   Containers   Networks │
-   └──────────────────────────┘
-        ↕ Image Pull/Push
-   Image Registry
-   (Docker Hub / Private)
-```
+**Like ordering food:**
+- You = Client (customer)
+- Chef = Daemon (does the cooking)
+- Recipe = Image (instructions)
+- Food = Container (actual result)
 
-**Flow analogy:**
-- Client → **Consumer** (places order)
-- Daemon → **Chef** (processes the order)
-- Images → **Recipe book** (blueprint)
-- Container → **Food** (the actual running app)
+## Docker Daemon (dockerd)
 
----
+Background service that:
+- Listens for commands
+- Creates/stops/manages containers
+- Handles images
+- Network stuff
+- File storage
 
-## Docker Daemon
+## Docker CLI
 
-- The **background service** (engine) that manages everything
-- Listens for Docker API requests
-- Manages containers, images, networks, volumes
-- Called `dockerd`
+Commands you type:
+- `docker run image` = create + start container
+- `docker ps` = list running containers
+- `docker stop <id>` = stop container
+- `docker build` = make image
+- `docker push` = upload image
+- `docker pull` = download image
 
----
-
-## Docker CLI (Command Line Interface)
-
-- The tool you use to **talk to Docker**
-- Sends commands to the Daemon via REST API
-- Examples: `docker run`, `docker pull`, `docker ps`
-
----
-
-## Docker Lifecycle — Build, Ship, Run
+## Container Lifecycle
 
 ```
-BUILD → SHIP → RUN
+Created → Running → Paused → Stopped → Removed
 ```
 
-| Stage | Action |
-|-------|--------|
-| **Build** | Create a Docker image (`docker build`) |
-| **Ship** | Share image via Docker Hub (`docker push`) |
-| **Run** | Start a container from the image (`docker run`) |
+1. **Create** - `docker create image` (ready but not running)
+2. **Start** - `docker start <id>` (now running)
+3. **Run** - `docker run` (create + start together)
+4. **Stop** - `docker stop <id>` (pause execution)
+5. **Remove** - `docker rm <id>` (delete container)
 
-### Container States:
-```
-Created → Running → Paused → Stopped
-```
+## Build, Ship, Run
+
+**BUILD:** Make image with `docker build`
+**SHIP:** Push to hub with `docker push`  
+**RUN:** Start using `docker run`
+
+## Docker vs VMs
+
+| | Docker | VM |
+|--|--------|-----|
+| OS | Shares kernel | Separate OS |
+| Startup | Seconds | Minutes |
+| Size | Small | Large |
+| Resources | Low | High |
+
+Docker faster + lighter = better
 
 ---
-
-## Docker vs Virtual Machine (Summary)
-
-| | Docker Container | Virtual Machine |
-|--|----------------|----------------|
-| OS | Shares host kernel | Separate Guest OS |
-| Boot time | Seconds | Minutes |
-| Resource usage | Low | High |
-| Isolation | Process-level | Full OS |
-| Startup | `docker run` instantly | Boot entire OS |
-
-**Why Docker wins:**
-- No Guest OS boot needed
-- Containers share the host OS kernel → **lightweight**
-- Less resource usage → **faster startup**
-
----
-
-
+*Note: Confused about docker images vs containers - ask for more examples*

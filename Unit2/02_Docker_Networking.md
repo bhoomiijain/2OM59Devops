@@ -1,83 +1,65 @@
-# 2. Docker Networking
+# Docker Networking
 
-## Why Docker Networking?
+## Why needed?
 
-By default, containers are **isolated** — they can't talk to each other or the outside world unless configured.
+Containers isolated by default = can't talk to each other
 
-Docker networking allows:
-- Containers to communicate with each other
-- Containers to be accessed from host/browser
-- Controlled isolation between services
+Need networking to:
+- Connect containers together
+- Access from browser
+- Talk to database
+- etc
 
----
+## Network Types
 
-## Types of Docker Networks
+**Bridge** (default)
+- Containers on same bridge can talk
+- When you do `docker run` = bridge network
+- List: `docker network ls`
 
-### 1. Bridge Network (Default)
-- Created automatically when Docker is installed
-- Containers on the same bridge network **can talk to each other**
-- Used when running multiple containers on a **single host**
-- Default network when you run `docker run` without specifying a network
+**Host**
+- Container uses host's network directly
+- No port mapping
+- Less isolation = faster
 
-```bash
-docker network ls
-# → bridge, host, none (default networks)
-```
+**Overlay**
+- Multi-host (Swarm/Kubernetes)
+- For distributed stuff
 
-### 2. Host Network
-- Container **shares the host's network stack** directly
-- No port mapping needed — container uses host ports directly
-- **Less isolation** but better performance
-
-```bash
-docker run --network host nginx
-```
-
-### 3. Overlay Network
-- Used for **multi-host** networking (Docker Swarm / Kubernetes)
-- Containers on different hosts can communicate
-- Encrypted by default
-
-### 4. None Network
-- Container has **no network access** at all
+**None**
+- No network access at all
 - Maximum isolation
 
----
+## Port Mapping
 
-## DNS Inside Docker
+```
+-p HOST_PORT:CONTAINER_PORT
+```
 
-When containers are on the **same custom network**, Docker provides:
-- **Automatic DNS resolution** by container name
-- You can use container names as hostnames
+Example:
+```
+docker run -p 8080:80 nginx
+```
 
-```bash
-# Create a custom network
-docker network create mynetwork
+Means: Host 8080 → Container 80
 
-# Run two containers on same network
-docker run -d --name webapp --network mynetwork nginx
-docker run -d --name db --network mynetwork mysql:8
+Can access from browser: `localhost:8080`
 
-# webapp can reach db using hostname "db"
-# e.g., db connection string: mysql://db:3306/mydb
+## Container Communication
+
+Two containers on same network = can talk using container names
+
+```
+docker network create mynet
+
+docker run -d --name app1 --network mynet nginx
+docker run -d --name app2 --network mynet python-app
+
+# app2 can reach app1 using "app1" as hostname
 ```
 
 ---
-
-## Port Mapping (Host ↔ Container)
-
-```
--p <HOST_PORT>:<CONTAINER_PORT>
-```
-
-| Part | Description |
-|------|-------------|
-| HOST_PORT | Port on your laptop/server |
-| CONTAINER_PORT | Port where the app runs inside container |
-
-```bash
-# Map host 8080 → container 80
-docker run -d -p 8080:80 nginx
+*Practice: Create custom network and connect containers*
 
 # Multiple port mappings
 docker run -d -p 8080:80 -p 443:443 nginx

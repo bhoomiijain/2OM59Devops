@@ -1,17 +1,55 @@
-# 4. Environment Variables in Docker
+# Environment Variables
 
-## What are Environment Variables?
+## What = env vars?
 
-**Environment variables** are **key-value pairs** used by applications to:
-- Read configuration
-- Store secrets (usernames, passwords)
-- Control application behavior **without changing the image**
+Key-value data containers can read
 
-> They allow us to **configure containers dynamically** — same image, different behavior.
+**Why?** Change app without rebuilding image
+
+- Configuration
+- Secrets (passwords)
+- Different for dev/prod
+
+## Using -e flag
+
+```
+docker run -e MY_VAR=hello ubuntu echo $MY_VAR
+```
+
+Output: `hello`
+
+Only inside container = host doesn't see
+
+## Multiple variables
+
+```
+docker run -e VAR1=value1 -e VAR2=value2 nginx
+```
+
+## MySQL Example
+
+```
+docker run -d -e MYSQL_ROOT_PASSWORD=root123 \
+  -e MYSQL_DATABASE=college \
+  mysql:8
+```
+
+Password = root123
+Database = college
+
+## In Dockerfile
+
+```dockerfile
+FROM ubuntu
+ENV APP_PORT=8080
+ENV APP_ENV=production
+```
+
+Defaults in image
+Override with `-e` when running
 
 ---
-
-## Why Use Them?
+*Test: Run container with different env vars*
 
 | Without `-e` | With `-e` |
 |-------------|----------|

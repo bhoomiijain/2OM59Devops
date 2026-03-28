@@ -1,53 +1,45 @@
-# 1. Basics of DevOps & Why Docker
+# DevOps Basics & Why Docker?
 
 ## What is DevOps?
-DevOps is a combination of **Development** and **Operations**. It bridges the gap between writing code and deploying/running it in production.
+Dev + Ops = working together (not separately)
 
-**Key goals:**
-- Faster software delivery
-- Better collaboration between dev and ops teams
-- Automation of repetitive tasks (build, test, deploy)
+- CODE → PROD faster
+- Devs and Ops team collaborate
+- Automate stuff (build, test, deploy) - dont waste time
+
+## Why Docker/Containers?
+
+**Before:** 
+- Big apps on server (monolithic)
+- As it grows → split into small parts
+- VMs very slow 😅 and heavy
+- "Works on my machine" problem → shipping to production = disaster
+
+**Now = Microservices + Containers**
+- Same image = runs everywhere
+- Startup in seconds (not minutes like VMs)
+- Uses less resources
+- Portable!!
+
+## Course - INT332
+**Units:**
+1. Containers basics
+2. Images, Docker, Dockerfile  
+3. Docker Compose
+4. Maven
+5. GitHub Actions (CI)
+6. Jenkins (CI/CD)
+
+**Marks:**
+- Project 30 marks (need to present + code)
+- Git repo 30 marks (gotta maintain properly)
+- Minor stuff 5 marks
+- AT2 = 45 marks
+
+**Need:** Docker Desktop or AWS
 
 ---
-
-## Why DevOps Needs Containers
-
-### The old problem:
-- Applications were **monolithic** → ran on single physical servers
-- As apps grew → split into components (frontend, backend, database)
-- VMs handled hosting, but they were **heavy and slow**
-- Now apps are **microservices** → containers are the solution
-
-### What Containers Solve:
-| Problem | Container Solution |
-|--------|-------------------|
-| "Works on my machine" | Same image runs everywhere |
-| Slow VM startup | Containers start in seconds |
-| High resource usage | Containers share host OS kernel |
-| Portability issues | Build once, run anywhere |
-
----
-
-## Course Syllabus — INT332
-
-| Unit | Topic |
-|------|-------|
-| I | Intro to Containers (Origin, DevOps basics, infrastructure) |
-| II | Image Building & Container Management, Dockerfile |
-| III | Microservices with Docker Compose |
-| IV | Maven Build Automation |
-| V | CI (Continuous Integration) with GitHub Actions |
-| VI | CI/CD with Jenkins |
-
-**Assessment:**
-- AT1: BYOD
-- AT2: Project
-- Marks split: 5, 45, 50
-- Project: 30 marks → Presentation, execution, tools, building CI/CD, synopsis, viva
-- Git repo: 30 marks → Complete git maintenance
-
-**Tools needed:**
-- Docker Desktop / AWS Platform
+*Note: Ask teacher about exact dates for submission?*
 - DockerHub (global sharing & versioning of images — free)
 - Jenkins for CI/CD
 - Maven

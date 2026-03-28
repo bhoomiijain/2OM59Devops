@@ -1,63 +1,64 @@
-# 5. Registries — Docker Hub, GHCR & Private Registries
+# Registries
 
-## Quick Recap: What is a Registry?
+## What = Registry?
 
-A registry is where Docker **images are stored and distributed** from.
+Storage for images
 
-```
-Developer → [docker build] → [docker push] → Registry
-Server    ← [docker pull] ←                 Registry
-```
+Push image → others can pull
 
----
+**Main ones:**
+- Docker Hub (default)
+- GitHub Container Registry (GHCR)
+- AWS ECR, Azure ACR
 
 ## Docker Hub
 
-The **default and most popular** public registry.
+https://hub.docker.com
 
-**Website:** https://hub.docker.com
+Free + official images (nginx, ubuntu, mysql...)
 
-**Features:**
-- Free public repositories
-- Private repos (limited on free plan)
-- Official images: `nginx`, `ubuntu`, `mysql`, `python`, `httpd`
-- Automated builds from GitHub
-- Image versioning & tagging
+## Push Your Image
 
-### Login and Push to Docker Hub
-
-```bash
-# Login
+1. **Login**
+```
 docker login
-# Enter: Docker Hub username + password
+```
 
-# Tag your local image for Docker Hub
-docker tag myapp:v1 yourusername/myapp:v1
+2. **Tag image**
+```
+docker tag myapp:v1 username/myapp:v1
+```
 
-# Push to Docker Hub
-docker push yourusername/myapp:v1
+3. **Push**
+```
+docker push username/myapp:v1
+```
 
-# Pull from Docker Hub
-docker pull yourusername/myapp:v1
+4. **Others can pull**
+```
+docker pull username/myapp:v1
+```
 
-# Logout
+## Logout
+
+```
 docker logout
 ```
 
+## GitHub Container Registry
+
+Store images with GitHub code
+
+URL: `ghcr.io`
+
+Need: GitHub Personal Access Token
+
+Login: `docker login ghcr.io`
+
+Tag: `ghcr.io/yourusername/myapp:v1`
+
 ---
-
-## GitHub Container Registry (GHCR)
-
-Stores Docker images **alongside your GitHub source code**.
-
-**Registry URL:** `ghcr.io`
-
-### Login and Push to GHCR
-
-```bash
-# Generate a GitHub Personal Access Token (PAT)
-# → GitHub → Settings → Developer Settings → Personal Access Tokens
-# Required scopes: read:packages, write:packages, delete:packages
+*Todo: Create Docker Hub account and push*
 
 # Login to GHCR
 echo YOUR_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin

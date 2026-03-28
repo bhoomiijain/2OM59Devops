@@ -1,53 +1,40 @@
-# 3. Container Runtime & Process Isolation (Namespaces)
+# Container Runtime & Namespaces
 
-## What is a Container Runtime?
+## Container Runtime?
 
-A **Container Runtime** is the software responsible for **creating, starting, stopping, and managing containers** on a host system.
+Software that creates/starts/stops containers. Takes image → makes it run
 
-> Think of it as the **execution engine** that turns a container image into a running container.
+**Basically:** Docker, containerd, CRI-O, Podman
 
-**Simple analogy:**
-- Container Image → **Packed lunch box** (read-only, just the food)
-- Container Runtime → **Person who opens it, serves food, and cleans up**
+**Docker** = most used one
 
-### Why is it needed?
-A container image is just a **read-only package** (app + dependencies). To actually run it, the runtime:
-1. Creates an isolated environment
-2. Applies resource limits
-3. Starts the application process
-4. Monitors and stops it when required
+**What it does:**
+- Runs container processes
+- Isolates stuff
+- Sets resource limits
+- Manages lifecycle
 
 ---
 
-## Types of Container Runtimes
+## Namespaces (Process Isolation)
 
-### 1. High-Level Runtimes (used by developers/DevOps tools)
-These handle image pulling, networking, storage, and container lifecycle.
+Container linux feature = isolate processes
 
-| Runtime | Description |
-|---------|-------------|
-| **Docker Engine** | Most popular, full-featured |
-| **containerd** | Industry standard, used by Kubernetes |
-| **CRI-O** | Kubernetes-focused |
-| **Podman** | Daemonless alternative to Docker |
+**Why?** So containers think they're separate from each other and host
 
-> Docker provides: image management APIs, management interfaces, calls low-level runtime
+**Types of namespaces:**
+- PID - process IDs (each container sees different PID 1)
+- Network - separate network (own IP, ports)
+- Mount (mnt) - separate file systems
+- IPC - inter-process communication
+- UTS - hostname stuff
+- User - different users in containers
 
-### 2. Low-Level Runtimes (the actual container runner)
-These directly interact with the Linux kernel to run container processes.
+**Example:** Container A thinks PID 1 is its app, but host sees it differently
 
-| Runtime | Description |
-|---------|-------------|
-| **runc** | OCI-compliant, most widely used |
+Each container = isolated world
 
-They work with:
-- **Linux kernel**
-- **Namespaces**
-- **cgroups**
-
----
-
-## Process Isolation using Namespaces
+*Note: Didn't fully understand UTS namespace - ask in next class*
 
 **Namespaces** are Linux kernel features that **partition system resources** so each container sees only its own environment.
 
