@@ -3,7 +3,7 @@
 ## Problem
 
 Containers = temporary  
-If deleted = all data lost 😅
+If deleted = all data lost
 
 Need = keep data even after container gone
 
@@ -157,7 +157,7 @@ ls ~/app/data
 
 # Remove container — files on host STILL exist
 docker rm -f my-app
-ls ~/app/data   # files still there ✅
+ls ~/app/data   # files still there
 ```
 
 ---

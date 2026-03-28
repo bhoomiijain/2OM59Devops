@@ -12,7 +12,7 @@ Dev + Ops = working together (not separately)
 **Before:** 
 - Big apps on server (monolithic)
 - As it grows → split into small parts
-- VMs very slow 😅 and heavy
+- VMs very slow and heavy
 - "Works on my machine" problem → shipping to production = disaster
 
 **Now = Microservices + Containers**

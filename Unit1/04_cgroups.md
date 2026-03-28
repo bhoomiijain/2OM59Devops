@@ -6,7 +6,7 @@ Linux thing that limits resources for containers
 
 **Namespaces** = isolation | **cgroups** = limits
 
-Without cgroups → one container eats all CPU/RAM → everything crashes 💥
+Without cgroups → one container eats all CPU/RAM → everything crashes
 
 ## Why important?
 

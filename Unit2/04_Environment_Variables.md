@@ -100,7 +100,7 @@ docker run -d \
   mysql:8
 ```
 
-> ⚠️ Without these variables, the MySQL container **will fail to start**.
+> Without these variables, the MySQL container **will fail to start**.
 
 ---
 
@@ -169,7 +169,7 @@ cat /data/test.txt
 exit
 
 # On host:
-echo $APP_ENV          # → empty (host not affected) ✅
+echo $APP_ENV          # → empty (host not affected)
 ```
 
 ---
