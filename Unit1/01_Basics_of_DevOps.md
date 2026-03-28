@@ -66,4 +66,4 @@ DevOps is a combination of **Development** and **Operations**. It bridges the ga
 
 ---
 
-> 📅 *Notes from Class — Unit I, Lecture 1*
+

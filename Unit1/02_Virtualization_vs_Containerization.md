@@ -89,7 +89,3 @@ Containers are a **lightweight alternative to VMs**.
 4. **Containers = perfect fit for microservices**
 5. Portability problem solved — same container runs on dev laptop and production server
 
----
-
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides + Handwritten notes (Pages 2–3)*

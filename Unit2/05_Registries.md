@@ -160,5 +160,4 @@ Container deployed to server/cloud
 
 ---
 
-> 📅 *Notes from Class — Unit II*  
-> 📖 *Reference: Slides + Handwritten notes (Pages 7–9)*
+

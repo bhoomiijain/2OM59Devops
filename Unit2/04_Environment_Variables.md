@@ -145,5 +145,3 @@ echo $APP_ENV          # → empty (host not affected) ✅
 
 ---
 
-> 📅 *Notes from Class — Unit II*  
-> 📖 *Reference: Slides (Slides 11–17) + Handwritten notes (Pages 15–18)*

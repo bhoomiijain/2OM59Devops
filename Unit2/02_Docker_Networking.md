@@ -150,5 +150,3 @@ docker ps
 
 ---
 
-> 📅 *Notes from Class — Unit II*  
-> 📖 *Reference: Syllabus + Handwritten notes (Pages 13–14)*

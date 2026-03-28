@@ -131,5 +131,3 @@ docker images
 
 ---
 
-> 📅 *Notes from Class — Unit II*  
-> 📖 *Reference: Syllabus + Class practice*

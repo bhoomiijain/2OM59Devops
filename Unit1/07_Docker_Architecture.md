@@ -89,5 +89,4 @@ Created → Running → Paused → Stopped
 
 ---
 
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides (Slides 52–55) + Handwritten notes (Pages 10–11)*
+

@@ -144,5 +144,4 @@ docker network ls
 
 ---
 
-> 📅 *Notes from Class — Unit II*  
-> 📖 *Reference: Syllabus + Handwritten notes (Pages 13, 18)*
+ 

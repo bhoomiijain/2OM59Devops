@@ -77,5 +77,4 @@ Docker uses a **Union Filesystem** (like OverlayFS) to:
 
 ---
 
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides (Slides 33–38) + Handwritten notes (Pages 6–7)*
+

@@ -98,9 +98,7 @@ PID 2 → worker        PID 1548 → worker
 | UTS | Hostname |
 | User | User IDs / permissions |
 
-> **Remember:** Namespaces = **Isolation**. cgroups = **Resource control**. (Next topic)
+> **Remember:** Namespaces = **Isolation**. cgroups = **Resource control**
 
 ---
 
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides (Slides 18–22) + Handwritten notes (Pages 3–5)*

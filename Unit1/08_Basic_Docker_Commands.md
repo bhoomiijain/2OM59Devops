@@ -237,5 +237,4 @@ mysql -h 127.0.0.1 -P 3306 -u root -p
 
 ---
 
-> 📅 *Notes from Class — Unit I & Unit II (Commands)*  
-> 📖 *Reference: Slides (Slides 56–65) + Handwritten notes (Pages 11–18)*
+

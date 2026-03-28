@@ -122,5 +122,4 @@ Docker Hub is the **centralized repository for Docker images**.
 
 ---
 
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides (Slides 39–51) + Handwritten notes (Pages 7–9)*
+

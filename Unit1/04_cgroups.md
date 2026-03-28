@@ -55,5 +55,3 @@ Similarly, cgroups ensure:
 
 ---
 
-> 📅 *Notes from Class — Unit I*  
-> 📖 *Reference: Slides + Handwritten notes (Pages 5–6)*
