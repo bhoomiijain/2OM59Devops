@@ -39,12 +39,6 @@ Dev + Ops = working together (not separately)
 **Need:** Docker Desktop or AWS
 
 ---
-*Note: Ask teacher about exact dates for submission?*
-- DockerHub (global sharing & versioning of images — free)
-- Jenkins for CI/CD
-- Maven
-
----
 
 ## Key Terminology
 
