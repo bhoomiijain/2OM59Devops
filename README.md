@@ -27,16 +27,19 @@
 - [6. Image Registries & Distribution](./Unit1/06_Image_Registries.md)
 - [7. Docker Architecture & Lifecycle](./Unit1/07_Docker_Architecture.md)
 - [8. Basic Docker Commands](./Unit1/08_Basic_Docker_Commands.md)
+- [9. Docker Object Types & Filesystem](./Unit1/09_Docker_Object_Types_and_Filesystem.md) ← **NEW**
+- [10. Container Interaction with Host](./Unit1/10_Container_Interaction_with_Host.md) ← **NEW**
 
 ---
 
 ## 🗂️ Unit II — Topics Covered
 
-- [1. Dockerfile & Image Building](./Unit2/01_Dockerfile_Basics.md)
-- [2. Docker Networking](./Unit2/02_Docker_Networking.md)
-- [3. Docker Storage — Volumes & Bind Mounts](./Unit2/03_Docker_Storage.md)
+- [1. Dockerfile & Image Creation](./Unit2/01_Dockerfile_Image_Creation.md) ← **UPDATED**
+- [2. Docker Networking](./Unit2/02_Docker_Networking.md) ← **UPDATED**
+- [3. Docker Storage — Volumes & Bind Mounts](./Unit2/03_Docker_Storage.md) ← **UPDATED**
 - [4. Environment Variables](./Unit2/04_Environment_Variables.md)
 - [5. Registries — DockerHub, GHCR, Private](./Unit2/05_Registries.md)
+- [6. GHCR & Private Registries — Step-by-Step](./Unit2/06_GHCR_and_Private_Registries.md) ← **NEW**
 
 ---
 

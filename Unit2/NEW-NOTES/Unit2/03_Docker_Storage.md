@@ -264,5 +264,3 @@ ls ~/app/data    # → test.txt still there ✅
 
 > 📅 *Notes from Class — Unit II*  
 > 📖 *Reference: New PPT slides 41–53, 63–68 (Basic_Docker_commands + Unit_2)*
-
- 

@@ -261,4 +261,3 @@ Rename-Item Dockerfile.txt Dockerfile
 
 > 📅 *Notes from Class — Unit II*  
 > 📖 *Reference: New PPT slides 45–65 (Basic_Docker_commands + Unit_2)*
-
