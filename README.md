@@ -16,14 +16,15 @@ Unit VI — CI/CD with Jenkins
 
 1. [Basics of DevOps & Why Docker](./Unit1/01_Basics_of_DevOps.md)
 2. [Virtualization vs Containerization](./Unit1/02_Virtualization_vs_Containerization.md)
-3. [Container Runtime & Namespaces](./Unit1/03_Container_Runtime_and_Namespaces.md)
-4. [Control Groups (cgroups)](./Unit1/04_cgroups.md)
-5. [Container Images & Layers](./Unit1/05_Container_Images_and_Layers.md)
-6. [Image Registries & Distribution](./Unit1/06_Image_Registries.md)
-7. [Docker Architecture & Lifecycle](./Unit1/07_Docker_Architecture.md)
-8. [Basic Docker Commands](./Unit1/08_Basic_Docker_Commands.md)
-9. [Docker Object Types & Filesystem](./Unit1/09_Docker_Object_Types_and_Filesystem.md)
-10. [Container Interaction with Host](./Unit1/10_Container_Interaction_with_Host.md)
+3. [Container Runtime](./Unit1/03_Container_Runtime_and_Namespaces.md)
+4. [Process Isolation & Namespaces](./Unit1/04_Process_Isolation_and_Namespaces.md)
+5. [Control Groups (cgroups)](./Unit1/05_cgroups.md)
+6. [Container Images & Layers](./Unit1/06_Container_Images_and_Layers.md)
+7. [Image Registries & Distribution](./Unit1/07_Image_Registries.md)
+8. [Docker Architecture & Lifecycle](./Unit1/08_Docker_Architecture.md)
+9. [Basic Docker Commands](./Unit1/09_Basic_Docker_Commands.md)
+10. [Docker Object Types & Filesystem](./Unit1/10_Docker_Object_Types_and_Filesystem.md)
+11. [Container Interaction with Host](./Unit1/11_Container_Interaction_with_Host.md)
 
 **Unit II — Topics Covered**
 

@@ -1,106 +1,254 @@
-# Container Runtime & Namespaces
+# Container Runtime
 
-Container Runtime:
+What is Container Runtime?
 
-Definition: Software that creates, starts, stops, and manages containers. Takes image → makes it run.
+Container runtime = software that creates, starts, stops, and manages containers.
+Takes Docker image → makes it run as a container.
 
-Why needed? Developers build images (apps). Someone needs to execute those images. Container runtime does that job.
+Why needed?
+
+Developers build images (complete application packages).
+Someone needs to execute those images into running containers.
+Container runtime does that job - the execution engine.
+
+Examples of Container Runtimes:
+
+Docker:
+- Most popular, user-friendly
+- High-level runtime
+- Manages images, networking, storage
+- Used by most developers
+
+containerd:
+- Lightweight high-level runtime
+- Used by Kubernetes
+- Focused on container lifecycle
+- Smaller than Docker
+
+CRI-O:
+- Container Runtime Interface for Kubernetes
+- Kubernetes-native runtime
+- Alternative to containerd
+
+Podman:
+- Docker alternative
+- Doesn't need daemon (rootless by default)
+- Better for security-conscious environments
+
+What Container Runtime Does:
+
+1. Image Management
+- Reads image from registry (Docker Hub, GHCR, etc)
+- Validates image integrity
+- Prepares image filesystem
+
+2. Container Creation
+- Creates container filesystem from image layers
+- Sets up working directory
+- Initializes environment
+
+3. Networking Setup
+- Creates network interfaces
+- Assigns IP address
+- Sets up DNS
+- Configures port mapping
+
+4. Resource Allocation
+- Assigns CPU quota (cgroups)
+- Allocates memory limit
+- Sets disk I/O limits
+- Configures network bandwidth limits
+
+5. Process Isolation
+- Creates namespaces (PID, Network, Mount, IPC, UTS, User)
+- Container isolated from host/other containers
+- Enforces security boundaries
+
+6. Container Execution
+- Starts main application process
+- Runs with specified command (from Dockerfile or command line)
+- Manages process lifecycle
+
+7. Monitoring & Lifecycle
+- Watches container for termination
+- Handles restart policies
+- Collects logs
+- Manages resource monitoring
+
+High-Level vs Low-Level Runtimes:
+
+Low-Level Runtime (OCI Runtime):
+
+Definition: Works directly with kernel features, creates actual container processes.
 
 Examples:
-- Docker (most popular, easy to use)
-- containerd (lighter, used by Kubernetes)
-- CRI-O (alternative, built for Kubernetes)
-- Podman (Docker alternative, rootless by default)
+- runc: Most common, part of Docker
+- crun: Alternative implementation, faster startup  
+- kata: Lightweight VMs instead of containers
+- gVisor: Sandboxed runtime
 
-What container runtime does:
-- Reads image from registry
-- Creates container filesystem
-- Sets up networking
-- Allocates resources (CPU, memory, disk)
-- Runs application process
-- Manages lifecycle (start, stop, pause, remove)
-- Isolates container using namespaces
-- Limits resources using cgroups
+Responsibilities:
+- Reads OCI bundle (standardized container format)
+- Creates namespaces
+- Applies cgroups
+- Mounts filesystems
+- Executes container process
+- Handles signals (SIGTERM, SIGKILL)
 
-High-level vs Low-level Container Runtimes:
+Users: Rarely used directly, called by high-level runtimes.
 
-Low-level runtime:
-- Works directly with kernel features (namespaces, cgroups)
-- Creates actual container processes
-- Examples: runc, crun, kata
-- Not directly used by users
-- Called by high-level runtimes
+High-Level Runtime:
 
-High-level runtime:
-- User-friendly interface (Docker, Podman)
-- Image management, networking, storage
-- Uses low-level runtime under the hood
-- Examples: Docker, containerd, CRI-O, Podman
+Definition: User-friendly interface on top of low-level runtime.
 
-Example stack:
-User runs "docker run" → Docker (high-level) → containerd (high-level for K8s) → runc (low-level) → Linux kernel features
+Examples:
+- Docker: Image management + networking + storage + low-level runtime
+- containerd: Container lifecycle + low-level runtime
+- CRI-O: Kubernetes integration + low-level runtime
+- Podman: Daemon-less + low-level runtime
 
-Process Isolation using Namespaces:
+Responsibilities:
+- Image pulling/pushing/management
+- Network management (create/delete networks)
+- Volume management
+- Easy-to-use CLI
+- Security policies
+- Logging aggregation
 
-Problem: Multiple containers running on same host. How do they not interfere with each other?
+Users: Everyone! Developers use high-level runtimes daily.
 
-Solution: Linux namespaces. Partition system resources so each container sees only its own environment.
+Example Runtime Stack:
 
-How? Kernel creates separate namespace for each container. Container thinks it owns:
-- Own processes (PID namespace)
-- Own network stack (Network namespace)
-- Own filesystem (Mount namespace)
-- Own users (User namespace)
-- Own hostname (UTS namespace)
-- Own IPC system (IPC namespace)
+User runs:
+docker run -p 8080:80 nginx
 
-Result: Container isolated from host and other containers. But shares kernel (efficient).
+Flow:
+1. Docker CLI (docker command)
+2. Docker Daemon (dockerd) [high-level runtime]
+3. containerd [high-level runtime for K8s]
+4. runc [low-level runtime, OCI compliant]
+5. Linux kernel [creates namespaces, applies cgroups]
 
-Types of Namespaces:
+Visual:
+User → docker run
+    ↓
+Docker (high-level)
+    ↓
+containerd (high-level for K8s)
+    ↓
+runc (low-level)
+    ↓
+Linux kernel (namespaces, cgroups)
+    ↓
+Container process runs
 
-1. PID Namespace (Process Isolation)
-Each container has own process tree. Processes inside = isolated from host/other containers.
-Inside container: PID 1 (app's main process)
-Host sees: PID 5847 (same process)
-Result: Container thinks it's the only app running. Host sees it as one process among many. Clean isolation.
+Container Runtime Configuration:
 
-2. Network Namespace
-Each container gets own IP address, network interfaces, routing table.
-Result: Two containers can both listen on port 8080 (no conflict).
-Example:
-Container A: port 8080 on 172.17.0.2
-Container B: port 8080 on 172.17.0.3
-No conflict. Same port, different IPs.
+Default runtimes:
+Docker uses runc by default.
+Kubernetes can use containerd or CRI-O.
 
-3. Mount Namespace (Filesystem/Volume Isolation)
-Each container has own filesystem view.
-Container A: sees /app/data
-Container B: sees /app/data (different location, different data)
-File changes inside container A don't affect container B or host.
-Result: Containers have isolated storage.
+Custom runtimes:
+Can specify different runtime for different containers:
+docker run --runtime=crun nginx (use crun instead of runc)
+docker run --runtime=kata nginx (use kata for lightweight VMs)
 
-4. IPC Namespace (Inter-Process Communication)
-Each container has own message queues, shared memory segments.
-Containers can't communicate between each other via IPC (isolated).
-Result: Process communication isolated.
+Why different runtimes?
 
-5. UTS Namespace (Hostname/Domain Isolation)
-Each container can have own hostname.
-Container A: hostname = "backend"
-Container B: hostname = "frontend"
-Result: Containers can have different hostnames.
+runc: Standard, stable, widespread.
+crun: Faster startup time.
+kata: More security (lightweight) VM isolation.
+gVisor: Sandboxed, best security, slower.
 
-6. User Namespace (User/Group Isolation)
-Container user mapped to host user (usually non-root).
-Container root ≠ host root (security).
-Example: Container's root user = host's regular user (no actual root privileges).
-Result: Better security (container can't escape and get real root).
+Runtime Performance Comparison:
 
-Why namespaces matter?
+runc:
+- Startup: ~100ms
+- Memory overhead: minimal
+- Security: good (namespace-based)
 
-Isolation = security. Each container isolated from others. Compromised container can't attack others.
-Efficiency = shared kernel. Don't need separate OS per container (unlike VMs).
-Cleanliness = containers think they own system, but don't. Creates clean abstraction.
+crun:
+- Startup: ~50ms (faster)
+- Memory overhead: minimal
+- Security: good (namespace-based)
 
-Remember: namespaces = isolation (what each container sees), Cgroups = resource control (how much resource each container gets)
+kata:
+- Startup: ~1000ms (slower)
+- Memory overhead: ~50MB (VM overhead)
+- Security: excellent (VM isolation)
+
+Runtime Standards:
+
+OCI (Open Container Initiative):
+
+Standard specification for:
+- Image format
+- Runtime specification
+- Distribution specification
+
+Ensures containers portable across runtimes:
+- Image built for Docker ✓ runs on containerd ✓ runs on CRI-O
+
+Runtime Lifecycle:
+
+When container created:
+
+1. Runtime receives
+container creation request
+
+2. Runtime reads OCI bundle:
+specification.json (container config)
+rootfs (filesystem)
+
+3. Runtime setup:
+Create namespaces
+Create cgroups
+Mount filesystems
+Create container root filesystem
+
+4. Runtime execute:
+Execute entrypoint/command
+Process runs as PID 1
+
+5. Runtime monitor:
+Watch for process termination
+Handle signals
+Collect exit code
+
+6. Runtime cleanup:
+Destroy namespaces
+Release cgroups
+Remove mount points
+Clean up filesystem
+
+Runtimes and Kubernetes:
+
+Kubernetes needs container runtime.
+
+CRI (Container Runtime Interface):
+Standard interface for Kubernetes to talk to container runtimes.
+
+Docker uses dockerd → Docker shim → containerd → runc.
+Kubernetes directly uses containerd or CRI-O (more efficient).
+
+Container Runtime Selection:
+
+Development:
+- Docker (familiar, full-featured)
+
+Production:
+- containerd (lightweight, efficient)
+- CRI-O (Kubernetes-native)
+
+High-security:
+- kata (VM-based isolation)
+- gVisor (sandboxed)
+
+Best practices:
+
+1. Use standard OCI-compliant runtime (portable)
+2. Match runtime to use case (dev, production, security)
+3. Keep runtime updated (performance, security)
+4. Use appropriate runtime for workload (CPU vs security)
+5. Monitor runtime performance (startup, memory, CPU)
 
