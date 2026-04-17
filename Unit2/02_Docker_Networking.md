@@ -323,7 +323,7 @@ docker run -d --name myapp --network my_app_net nginx
 Container Communication on Custom Bridge:
 
 Architecture:
-Container A (IP: 172.20.0.2) --- Bridge Network --- Container B (IP: 172.20.0.3)
+Container A (IP: 172.20.0.2) connects through Bridge Network to Container B (IP: 172.20.0.3)
 
 Container A can reach B by:
 - ping 172.20.0.3 (by IP)

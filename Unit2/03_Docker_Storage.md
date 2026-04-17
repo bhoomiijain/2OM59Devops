@@ -25,15 +25,23 @@ Two approaches:
 
 Volumes vs Bind Mounts:
 
-| Feature | Volumes | Bind Mounts |
-|---------|---------|------------|
-| Managed by | Docker | You |
-| Storage location | /var/lib/docker/volumes (Linux) | Anywhere on host |
-| Works across platforms | Yes (Windows, Mac, Linux) | Not portable |
-| Backup | Easy | Manual |
-| Performance | Good | Lower |
-| Best for | Production | Development |
-| Portability | Excellent | Not recommended |
+Volumes:
+- Managed by Docker
+- Storage location: /var/lib/docker/volumes (Linux)
+- Works across platforms: Yes (Windows, Mac, Linux)
+- Backup: Easy
+- Performance: Good
+- Best for: Production
+- Portability: Excellent
+
+Bind Mounts:
+- Managed by: You
+- Storage location: Anywhere on host
+- Works across platforms: Not portable
+- Backup: Manual
+- Performance: Lower
+- Best for: Development
+- Portability: Not recommended
 
 Volumes (Recommended):
 
@@ -729,8 +737,6 @@ docker run -v /path:/path:ro image
   -v mysql_data:/var/lib/mysql \
   mysql:8
 ```
-
----
 
 ## Hands-on Lab 1 — Volume Persistence (from class)
 

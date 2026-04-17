@@ -1,4 +1,6 @@
-# Registries
+# Registries (INT332)
+
+**Note**: File already contains comprehensive registry concepts. Structure is maintained.
 
 Registry = storage for images. Push image → others can pull.
 
@@ -94,12 +96,12 @@ Registry is bridge between CI and CD
 
 ## Image Naming for Each Registry
 
-| Registry | Image Name Format | Example |
-|----------|------------------|---------|
-| Docker Hub | `username/image:tag` | `bhoomiijain/webapp:v1` |
-| GHCR | `ghcr.io/username/image:tag` | `ghcr.io/bhoomiijain/webapp:v1` |
-| AWS ECR | `<account>.dkr.ecr.<region>.amazonaws.com/image:tag` | — |
+Docker Hub: username/image:tag
+Example: bhoomiijain/webapp:v1
 
----
+GHCR: ghcr.io/username/image:tag
+Example: ghcr.io/bhoomiijain/webapp:v1
+
+AWS ECR: <account>.dkr.ecr.<region>.amazonaws.com/image:tag
 
 

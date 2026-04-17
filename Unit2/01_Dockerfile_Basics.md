@@ -427,7 +427,7 @@ Docker build workflow:
 - docker build -f Dockerfile.prod -t myapp:prod . (specific Dockerfile)
 - docker build --no-cache -t myapp:v1 . (ignore cache, rebuild)
 
-## Verifying Images
+## Verifying Images:
 
 1. **docker history image:tag** : View all layers + commands that created them
    - Example: docker history custom-nginx:v1
@@ -460,10 +460,9 @@ Docker build workflow:
    - USER appuser
 
 ## Common Base Images
-
 - ubuntu:22.04 (general purpose)
 - alpine:latest (very small, ~5MB)
-- python: 3.11 (Python pre-installed)
+- python:3.11 (Python pre-installed)
 - node:18 (Node.js pre-installed)
 - nginx:alpine (Nginx web server)
 - mysql:8 (MySQL database)
