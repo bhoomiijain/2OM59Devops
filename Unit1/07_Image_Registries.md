@@ -1,15 +1,15 @@
 # Image Registries
 
-What is a Registry?
+**What is a Registry?**
 
 Registry = centralized storage for Docker images. Like GitHub but for containers.
 
-Purpose: Store, version, distribute container images.
+**Purpose: Store, version, distribute container images.**
 
 Users push images to registry (upload).
 Users pull images from registry (download).
 
-Public vs Private Registries:
+**Public vs Private Registries:**
 
 Public Registries:
 - Anyone can pull images (no authentication needed)
@@ -18,14 +18,14 @@ Public Registries:
 - Open source projects share images
 - Example: Docker Hub
 
-Private Registries:
+**Private Registries:**
 - Authentication required (username/password or token)
 - For company proprietary images
 - For sensitive/internal applications
 - Controlled access (only authorized users can pull)
 - Examples: AWS ECR, Azure ACR, GitHub Container Registry, self-hosted registries
 
-Popular Registries:
+**Popular Registries:**
 
 1. Docker Hub (docker.io)
 Official registry. Largest collection of public images.

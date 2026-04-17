@@ -1,6 +1,6 @@
 # Container Runtime
 
-What is Container Runtime?
+**What is Container Runtime?**
 
 Container runtime = software that creates, starts, stops, and manages containers.
 Takes Docker image → makes it run as a container.

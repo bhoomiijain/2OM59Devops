@@ -1,16 +1,16 @@
 # cgroups
 
-What are cgroups?
+**What are cgroups?**
 
 cgroups (control groups) = Linux kernel feature that limits and controls resources for processes and containers.
 
-Why needed?
+**Why needed?**
 
 Without cgroups: One container can hog all CPU, RAM, disk I/O. Other containers starve. Host crashes.
 
 With cgroups: Each container limited to fair share. System stays stable.
 
-Namespaces vs cgroups:
+**Namespaces vs cgroups:**
 
 Namespaces = isolation (what each container SEES)
 - Container A sees its PID as 1 (isolation)
@@ -22,12 +22,12 @@ cgroups = resource control (what each container GETS)
 - Container B limited to 256MB RAM
 - CPU time fairly divided
 
-Analogy: Apartment building
+**Analogy: Apartment building**
 
 Namespaces = separate apartments (each tenant sees own walls, doesn't see neighbors)
 cgroups = utilities meter on each apartment (electrical meter limits power usage per apartment)
 
-Without cgroups = BAD:
+**Without cgroups = BAD:**
 
 One container hogs all resources:
 - Tenant A runs heavy workload (CPU maxed out)
@@ -36,7 +36,7 @@ One container hogs all resources:
 - Host server freezes
 - All services down
 
-With cgroups = GOOD:
+**With cgroups = GOOD:**
 
 Resources fairly divided:
 - Tenant A gets 40% CPU (still works)
@@ -45,7 +45,7 @@ Resources fairly divided:
 - Each container gets guaranteed minimum resources
 - Fair sharing even under heavy load
 
-Types of resources cgroups control:
+**Types of resources cgroups control:**
 
 1. CPU
 Limit maximum CPU core usage (single or multiple cores).
@@ -53,31 +53,31 @@ Limit CPU time percentage (e.g., 50% of available CPU).
 Set CPU priorities (some containers more important than others).
 Result: Container can't monopolize CPU.
 
-2. Memory
+**2. Memory**
 Limit maximum RAM usage (e.g., 512MB per container).
 Soft limit (warning when exceeded) vs hard limit (kill container if exceeded).
 Result: Container can't exhaust host memory.
 
-3. Disk I/O
+**3. Disk I/O**
 Limit read/write operations per second.
 Limit bandwidth (MB/s) for disk operations.
 Result: Container can't saturate disk (affects other containers).
 
-4. Network
+**4. Network**
 Limit bandwidth per interface (download/upload speed).
 Rate limiting (packets per second).
 Result: Container can't flood network.
 
-5. Device Access
+**5. Device Access**
 Limit access to device nodes (/dev/sda, etc).
 Block specific devices.
 Result: Container can't directly access host hardware.
 
-6. Process Count
+**6. Process Count**
 Limit number of processes/threads per container.
 Result: Container can't fork bomb the system.
 
-How cgroups work:
+**How cgroups work:**
 
 Linux creates cgroup for each container.
 Docker sets limits on that cgroup:

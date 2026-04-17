@@ -1,6 +1,6 @@
 # Basic Docker Commands
 
-Image Commands:
+**Image Commands:**
 docker --version = check Docker version
 docker info = detailed Docker info
 docker pull ubuntu = download image
@@ -9,7 +9,7 @@ docker history httpd = view image history
 docker rmi ubuntu = delete image
 docker rmi -f <id> = force delete
 
-Container Lifecycle:
+**Container Lifecycle:**
 docker run ubuntu = create + run container
 docker run -it ubuntu /bin/bash = run with interactive terminal
 docker run -d nginx = run background (detached)
@@ -24,27 +24,27 @@ docker pause <id> = pause container
 docker rm <id> = remove container
 docker rm -f <id> = force remove even if running
 
-Container Interaction:
+**Container Interaction:**
 docker exec -it <id> bash = open bash terminal inside container
 docker logs <id> = show container output
 docker inspect <id> = detailed config in JSON
 docker stats = live CPU + memory usage
 docker top <id> = running processes inside
 
-Port Mapping flag -p:
+**Port Mapping flag -p:**
 -p <HOST_PORT>:<CONTAINER_PORT>
 docker run -d -p 8080:80 --name mynginx nginx
 Maps host port 8080 to container port 80
 Access: localhost:8080 in browser
 
-docker run Flags Summary:
+**docker run Flags Summary:**
 -d = detached (background)
 -it = interactive + tty
 --name = give container name
 --rm = auto-remove on exit
 -p = port mapping, -e = environment variable, -v = volume mount
 
-Volume Commands:
+**Volume Commands:**
 docker volume create myvolume = create volume
 docker volume ls = list all volumes
 docker volume inspect myvolume = show details

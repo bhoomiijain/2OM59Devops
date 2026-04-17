@@ -1,6 +1,6 @@
 # Docker Architecture & Lifecycle
 
-Main Components:
+**Main Components:**
 - Docker Client = CLI (terminal commands)
 - Docker Daemon = engine (does the work)
 - Images = read-only blueprint
@@ -11,14 +11,14 @@ How Docker works: Type command → CLI sends to Daemon → Daemon does stuff →
 
 Like ordering food: You = client (customer), Chef = daemon (cooking), Recipe = image (instructions), Food = container (result)
 
-Docker Daemon (dockerd) = background service:
+**Docker Daemon (dockerd) = background service:**
 - Listens for commands
 - Creates/stops/manages containers
 - Handles images
 - Network stuff
 - File storage
 
-Docker CLI commands:
+**Docker CLI commands:**
 - docker run image = create + start container
 - docker ps = list running containers
 - docker stop <id> = stop container
@@ -26,7 +26,7 @@ Docker CLI commands:
 - docker push = upload image
 - docker pull = download image
 
-Container Lifecycle:
+**Container Lifecycle:**
 Created → Running → Paused → Stopped → Removed
 
 1. Create: docker create image (ready but not running)
@@ -35,12 +35,12 @@ Created → Running → Paused → Stopped → Removed
 4. Stop: docker stop <id> (pause execution)
 5. Remove: docker rm <id> (delete)
 
-Build, Ship, Run:
+**Build, Ship, Run:**
 - BUILD: make image docker build
 - SHIP: push to hub docker push
 - RUN: start docker run
 
-Docker vs VMs:
+**Docker vs VMs:**
 - OS: Docker shares kernel, VMs separate
 - Startup: Docker seconds, VMs minutes
 - Size: Docker small, VMs large

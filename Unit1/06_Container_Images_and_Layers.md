@@ -1,6 +1,6 @@
 # Container Images & Layers
 
-What is an Image?
+**What is an Image?**
 
 Image = blueprint/template for containers. Read-only. Immutable once built.
 
@@ -15,7 +15,7 @@ Example: python:3.11-slim image contains Linux + Python 3.11 + pip pre-installed
 
 When you run container: Docker makes container from image and adds writable top layer (ephemeral).
 
-Image vs Container:
+**Image vs Container:**
 
 Image = template (read-only, stored on disk, reusable)
 Container = running instance (writable, has ephemeral storage, temporary)
@@ -24,7 +24,7 @@ Multiple containers can run from same image.
 Each container gets own writable layer.
 Modifications inside container isolated to that container.
 
-Image Naming Convention:
+**Image Naming Convention:**
 
 Full image name format: registry/namespace/image:tag
 
@@ -47,7 +47,7 @@ python:3.11
 - Image: python
 - Tag: 3.11
 
-Tags explained:
+**Tags explained:**
 - latest = newest version (default if omitted)
 - v1, v2, v1.0.1 = version numbers
 - prod, staging, dev = environment
@@ -59,7 +59,7 @@ myapp:v1.0 (specific version)
 myapp:prod-v2 (production version 2)
 myapp:1.0-arm64 (version 1.0 for ARM processors)
 
-Registries in naming:
+**Registries in naming:**
 - docker.io = Docker Hub (default, no need to specify)
 - ghcr.io = GitHub Container Registry
 - quay.io = Quay.io registry
@@ -68,11 +68,11 @@ Registries in naming:
 - myregistry.azurecr.io = Azure Container Registry
 - private-registry.company.com = Private company registry
 
-Public vs Private namespace:
+**Public vs Private namespace:**
 - Public: registry/library/image - anyone can pull
 - Private: registry/username/image - only you or auth users can pull
 
-Image Layers:
+**Image Layers:**
 
 Docker images are built as stack of layers. Each layer = snapshot of filesystem at that stage.
 

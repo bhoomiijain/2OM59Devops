@@ -1,6 +1,6 @@
 # Process Isolation & Namespaces
 
-What is Process Isolation?
+**What is Process Isolation?**
 
 Process isolation = kernelfeature that separates processes so they can't interfere with each other.
 

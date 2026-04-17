@@ -1,6 +1,6 @@
 # Container Interaction with Host
 
-docker exec: run commands inside already running container
+**docker exec:** run commands inside already running container
 docker exec -it <id> bash = open interactive bash terminal
 docker exec -it <id> sh = open sh (for Alpine images)
 docker exec -it <id> ls / = run single command
