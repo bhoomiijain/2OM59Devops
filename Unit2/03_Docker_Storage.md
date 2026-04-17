@@ -47,57 +47,84 @@ Mapping: /app/data → /var/lib/docker/volumes/myvolume/_data
 
 When container removed: volume persists (data safe).
 
-Volume Management Commands:
+## Volume Management Commands
 
-Create volume:
-docker volume create myvolume
+1. **docker volume create myvolume** : Create volume.
 
-List volumes:
-docker volume ls
+2. **docker volume ls** : List volumes.
 
-Inspect volume:
-docker volume inspect myvolume
-Shows: driver, mount point on host, creation time.
+3. **docker volume inspect myvolume** : Inspect volume details.
+   - Shows: driver, mount point on host, creation time
 
-Remove volume:
-docker volume rm myvolume
+4. **docker volume rm myvolume** : Remove volume.
 
-Remove all unused volumes:
-docker volume prune
+5. **docker volume prune** : Remove all unused volumes.
 
-Run container with volume:
-docker run -d -v myvolume:/app/data nginx
-
-This maps myvolume → /app/data inside container.
+6. **docker run -d -v myvolume:/app/data nginx** : Run container with volume.
+   - This maps myvolume → /app/data inside container
 
 Volume Examples:
 
-Example 1: Database persistence
+## Volume Examples
+
+**Example 1: Database persistence**
 
 Create volume:
+```bash
 docker volume create mysql_data
+```
 
 Run MySQL with volume:
+```bash
 docker run -d \
   --name mysql_db \
   -e MYSQL_ROOT_PASSWORD=root123 \
   -v mysql_data:/var/lib/mysql \
   mysql:8
+```
 
-Database data stored in mysql_data volume.
-Even if container deleted, data persists in volume.
-Create new container, reuse volume:
+Reuse volume in new container:
+```bash
+# Database data stored in mysql_data volume
+# Even if container deleted, data persists in volume
+# Create new container, reuse volume:
 docker run -d \
   --name mysql_db_new \
   -e MYSQL_ROOT_PASSWORD=root123 \
   -v mysql_data:/var/lib/mysql \
   mysql:8
+# New container has all old data!
+```
 
-New container has all old data!
+## Bind Mounts (Manual Host Management)
 
-Example 2: Web server documents
+**What is bind mount?**
 
-docker volume create website_data
+- Bind mounts = manual management (you manage path, not Docker)
+- Stored anywhere on host filesystem
+- Not portable across platforms
+- Good for development
+
+**Basic syntax**:
+```bash
+docker run -d -v /host/path:/container/path image:tag
+```
+
+**Examples**:
+
+```bash
+# Linux/Mac - current directory
+docker run -d -v $(pwd):/app ubuntu
+
+# Windows - host path to container
+docker run -d -v C:\app\code:/app ubuntu
+
+# Mount single file
+docker run -d -v ~/.bashrc:/root/.bashrc ubuntu
+
+# Read-only mount
+docker run -d -v /host/path:/container/path:ro ubuntu
+```
 
 docker run -d \
   --name webserver \

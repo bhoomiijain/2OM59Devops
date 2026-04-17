@@ -38,109 +38,123 @@ Each container gets IP on bridge network (172.17.0.2, 172.17.0.3, etc).
 Containers on same bridge can communicate by IP.
 Containers on default bridge cannot resolve names (no DNS).
 
-Default bridge network commands:
+## Default Bridge Network Commands
 
-docker network ls
-List all networks. Shows bridge, host, none networks.
+1. **docker network ls** : List all networks. Shows bridge, host, none networks.
 
-docker network inspect bridge
-Show detailed info about default bridge:
-- Subnet (172.17.0.0/16)
-- Connected containers
-- Gateways
-- Driver info
+2. **docker network inspect bridge** : Show detailed info about default bridge.
+   - Subnet (172.17.0.0/16)
+   - Connected containers
+   - Gateways
+   - Driver info
 
-Containers on default bridge:
+**Containers on default bridge**:
+```bash
 docker run -d --name container_a nginx
 docker run -d --name container_b ubuntu sleep 1000
+```
 
-Both on default bridge (docker0).
+**Test connectivity by IP**:
+```bash
+docker exec container_b ping 172.17.0.2  # IP of container A
+# Note: containers don't resolve names (container_a won't work)
+```
 
-Test connectivity by IP:
-docker exec container_b ping 172.17.0.2 (IP of container A)
-For default bridge, containers don't resolve names (container_a won't work).
-
-Issues with default bridge:
+**Issues with default bridge**:
 - No DNS name resolution between containers
 - Limited isolation control
 - Not recommended for production
 
-B. Custom Bridge Network (RECOMMENDED FOR PRODUCTION)
+## Custom Bridge Network (RECOMMENDED FOR PRODUCTION)
 
-Better than default bridge. Provides:
+**Why custom bridge is better** :
 - Automatic DNS resolution (ping by container name)
 - Better isolation
 - Easier management
 
-Create custom bridge:
+**Create custom bridge** :
+```bash
 docker network create my_bridge_net
+```
 
-Run containers on custom network:
+**Run containers on custom network** :
+```bash
 docker run -d --name container_a --network my_bridge_net nginx
 docker run -d --name container_b --network my_bridge_net ubuntu sleep 1000
+```
 
-Test connectivity by name (DNS works):
-docker exec container_b ping container_a
-Resolves to IP automatically!
+**Test connectivity by name (DNS works)** :
+```bash
+docker exec container_b ping container_a  # Resolves to IP automatically!
+```
 
-Multiple networks:
+**Multiple networks** :
+```bash
 docker network create net1
 docker network create net2
 
 docker run -d --name app1 --network net1 nginx
 docker run -d --name app2 --network net2 nginx
+# app1 and app2 cannot communicate (different networks)
+```
 
-app1 and app2 cannot communicate (different networks).
+**Connect container to additional network** :
+```bash
+docker network connect net2 app1  # app1 now on both net1 and net2
+```
 
-Connect container to additional network:
-docker network connect net2 app1
-app1 now on both net1 and net2 (can communicate with both).
+**Inspect custom network** :
+```bash
+docker network inspect my_bridge_net  # Shows containers, subnet, IPs
+```
 
-Inspect custom network:
-docker network inspect my_bridge_net
-Shows connected containers, subnet, IP assignments.
+**Remove network** :
+```bash
+docker network rm my_bridge_net  # Only works if no containers attached
+```
 
-Remove network:
-docker network rm my_bridge_net
-(Only works if no containers attached)
+## Host Network
 
-C. Host Network
+**Description** : Container shares host's networking stack (not isolated).
+- No separate IP - uses host IP directly
+- No need for port mapping (-p not needed)
+- Faster performance (no virtual bridge)
+- **Linux only** (not available on Docker Desktop for Windows/Mac)
 
-Container shares host's networking stack (not isolated).
-No separate IP - uses host IP directly.
-No need for port mapping (-p not needed).
-Faster performance (no virtual bridge).
-Linux only (not available on Docker Desktop for Windows/Mac).
-
-When to use:
+**When to use** :
 - Performance critical
 - Need direct host access
 - Monitoring/system tools
 
-Example:
+**Example** :
+```bash
 docker run -d --network host nginx
+# Access nginx directly on host IP:
+curl http://localhost:80  # Works without -p
+# No port mapping needed with host network
+```
 
-Access nginx directly on host IP:
-curl http://localhost:80 (works without -p)
+## Overlay Network
 
-No port mapping needed with host network.
+**Description** : Used in Docker Swarm mode for multi-host deployments.
+- Connects containers across multiple Docker hosts
+- Requires Swarm mode enabled
 
-D. Overlay Network
-
-Used in Docker Swarm mode for multi-host deployments.
-Connects containers across multiple Docker hosts.
-Requires Swarm mode enabled.
-
-Initialize swarm:
+**Initialize swarm** :
+```bash
 docker swarm init
+```
 
-Create overlay network:
+**Create overlay network** :
+```bash
 docker network create -d overlay my_overlay
+```
 
-Deploy service on overlay:
+**Deploy service on overlay** :
+```bash
 docker service create --name web --network my_overlay -p 8080:80 nginx
-
-Containers on different hosts can communicate across overlay network.
+# Containers on different hosts can communicate across overlay network
+```
 
 Advanced: DNS Inside Docker
 
