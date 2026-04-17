@@ -1,208 +1,91 @@
-# 6. GitHub Container Registry (GHCR) — Step-by-Step Guide
+# GitHub Container Registry (GHCR)
 
-> **GHCR** lets you store Docker images **directly alongside your GitHub source code**.  
-> Registry URL: `ghcr.io`
+GHCR lets store Docker images directly alongside GitHub source code. Registry URL: ghcr.io
 
----
-
-## What You'll Learn
-- Build a Docker image
+What You'll Learn:
+- Build Docker image
 - Push image to GHCR
 - Pull image from GHCR
 - Understand authentication with PAT tokens
 
----
+Step 1: Create GitHub Personal Access Token (PAT)
 
-## Step 1 — Create a GitHub Personal Access Token (PAT)
+PAT acts as password for Docker when pushing to GHCR.
 
-A **PAT (Personal Access Token)** acts as your password for Docker when pushing to GHCR.
+Warning: Use your PAT, NOT GitHub password, when logging into GHCR.
 
-> ⚠️ Use your PAT, NOT your GitHub password, when logging into GHCR.
+How to generate:
+1. Go to: GitHub → Settings → Developer Settings → Personal Access Tokens
+   Direct: https://github.com/settings/tokens
+2. Choose: Classic Token
+3. Enable: write:packages, read:packages, delete:packages (optional)
+4. Click: Generate Token
+5. Copy immediately - won't see again
 
-**How to generate:**
+Step 2: Create Simple Demo Project
 
-1. Go to: **GitHub → Settings → Developer Settings → Personal Access Tokens**  
-   Direct link: https://github.com/settings/tokens
-
-2. Choose: **Classic Token**
-
-3. Enable these permissions:
-   - ✅ `write:packages`
-   - ✅ `read:packages`
-   - ✅ `delete:packages` *(optional)*
-
-4. Click **Generate Token**
-
-5. **Copy it immediately** — you will NOT see it again
-
----
-
-## Step 2 — Create a Simple Demo Project
-
-```bash
-# Create project folder
 mkdir ghcr-demo
 cd ghcr-demo
-```
 
-**Create `index.html`:**
-```html
+Create index.html:
 <h1>GHCR Demo Success!</h1>
-```
 
-**Create `Dockerfile`:**
-```dockerfile
+Create Dockerfile:
 FROM nginx:alpine
 COPY index.html /usr/share/nginx/html/index.html
-```
 
----
+Step 3: Build Docker Image
 
-## Step 3 — Build the Docker Image
-
-```bash
-# Replace "yourusername" with your actual GitHub username
+Replace "yourusername" with actual GitHub username:
 docker build -t ghcr.io/yourusername/ghcr-demo .
 
-# Example:
+Example:
 docker build -t ghcr.io/bhoomiijain/ghcr-demo .
-```
 
-> **Image naming for GHCR:** `ghcr.io/<github-username>/<image-name>`
+Image naming for GHCR: ghcr.io/<github-username>/<image-name>
 
----
+Step 4: Login to GHCR
 
-## Step 4 — Login to GHCR
-
-```bash
 docker login ghcr.io
-```
 
-When prompted:
-- **Username** → your GitHub username
-- **Password** → your PAT token (NOT your GitHub password)
+Prompted:
+- Username: your GitHub username
+- Password: your PAT token (NOT GitHub password)
 
-**Alternative (non-interactive, good for CI/CD):**
-```bash
+Alternative (non-interactive):
 echo YOUR_PAT_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-```
 
----
+Step 5: Push Image to GHCR
 
-## Step 5 — Push Image to GHCR
-
-```bash
 docker push ghcr.io/yourusername/ghcr-demo
 
-# Example:
+Example:
 docker push ghcr.io/bhoomiijain/ghcr-demo
-```
 
-**What happens:**
-- Image layers upload from local machine → GitHub registry
-- Only **new/changed layers** are pushed (efficient)
+What happens: Image layers upload from local to GitHub registry. Only new/changed layers uploaded (efficient).
 
----
+Step 6: Verify on GitHub
 
-## Step 6 — Verify on GitHub
+1. Go GitHub profile
+2. Click Packages tab
+3. You see: image name, visibility (public/private), version/tag
 
-1. Go to your GitHub profile
-2. Click **Packages** tab
-3. You will see:
-   - ✅ Image name
-   - ✅ Visibility (public/private)
-   - ✅ Version/tag
+Step 7: Pull Image Back (Proof)
 
----
-
-## Step 7 — Pull Image Back (Proof of Success)
-
-```bash
-# Delete local image first
+Delete local first:
 docker rmi ghcr.io/yourusername/ghcr-demo
 
-# Pull from GHCR
+Pull from GHCR:
 docker pull ghcr.io/yourusername/ghcr-demo
-```
 
----
+Step 8: Run Container (Final Proof)
 
-## Step 8 — Run Container (Final Visual Proof)
-
-```bash
 docker run -p 8080:80 ghcr.io/yourusername/ghcr-demo
 
-# Open browser → http://localhost:8080
-# Expected: "GHCR Demo Success!"
-```
+Open browser: http://localhost:8080
+Expected: GHCR Demo Success!
 
 ---
-
-## GHCR vs Docker Hub
-
-| Feature | Docker Hub | GHCR |
-|---------|-----------|------|
-| Provider | Docker Inc. | GitHub |
-| Free private repos | Limited (1) | Unlimited |
-| Integration | General purpose | Native GitHub/Actions |
-| Auth method | Docker Hub token | GitHub PAT |
-| Image URL format | `username/image:tag` | `ghcr.io/username/image:tag` |
-| Best for | Public open-source images | Projects hosted on GitHub |
-
----
-
-## Authentication & Access Tokens — Summary
-
-### Why Tokens Instead of Passwords?
-
-| Reason | Explanation |
-|--------|-------------|
-| **Scoped** | Token only has the permissions you choose |
-| **Revocable** | Revoke without changing your password |
-| **Auditable** | You can see when/where it was used |
-| **Required for CI/CD** | Pipelines can't use 2FA passwords |
-
-### Docker Hub Access Token
-
-```
-Docker Hub → Account Settings → Security → New Access Token
-```
-
-```bash
-docker login -u yourusername
-# Paste token when prompted (not your password)
-```
-
-### Using Tokens in GitHub Actions (CI/CD)
-
-```yaml
-- name: Login to GHCR
-  uses: docker/login-action@v2
-  with:
-    registry: ghcr.io
-    username: ${{ github.actor }}
-    password: ${{ secrets.GITHUB_TOKEN }}
-```
-
----
-
-## Private Registry — Run Your Own
-
-You can also self-host a Docker registry:
-
-```bash
-# Run a private registry locally on port 5000
-docker run -d -p 5000:5000 --name registry registry:2
-
-# Tag your image for local registry
-docker tag nginx localhost:5000/myimage
-
-# Push to local registry
-docker push localhost:5000/myimage
-
-# Pull from local registry
-docker pull localhost:5000/myimage
-```
 
 ---
 

@@ -1,153 +1,76 @@
 # Environment Variables
 
-## What = env vars?
+Env vars = key-value data containers can read
 
-Key-value data containers can read
-
-**Why?** Change app without rebuilding image
-
+Why? Change app without rebuilding image. Used for:
 - Configuration
 - Secrets (passwords)
 - Different for dev/prod
 
-## Using -e flag
-
-```
+Using -e flag:
 docker run -e MY_VAR=hello ubuntu echo $MY_VAR
-```
 
-Output: `hello`
+Output: hello. Only inside container - host doesn't see.
 
-Only inside container = host doesn't see
-
-## Multiple variables
-
-```
+Multiple variables:
 docker run -e VAR1=value1 -e VAR2=value2 nginx
-```
 
-## MySQL Example
+MySQL Example:
+docker run -d -e MYSQL_ROOT_PASSWORD=root123 -e MYSQL_DATABASE=college mysql:8
 
-```
-docker run -d -e MYSQL_ROOT_PASSWORD=root123 \
-  -e MYSQL_DATABASE=college \
-  mysql:8
-```
+Password = root123, Database = college
 
-Password = root123
-Database = college
-
-## In Dockerfile
-
-```dockerfile
+In Dockerfile:
 FROM ubuntu
 ENV APP_PORT=8080
 ENV APP_ENV=production
-```
 
-Defaults in image
-Override with `-e` when running
+Defaults set in image. Can override with -e when running.
 
----
-*Test: Run container with different env vars*
+Method 1: Using -e flag with docker run
 
-| Without `-e` | With `-e` |
-|-------------|----------|
-| Configuration must be hard-coded in image | Same image → different behavior in dev/prod |
-| Need to rebuild image for every change | Secure & flexible configuration |
-| Less flexible | Widely used in microservices & cloud deployments |
-
----
-
-## Setting Environment Variables
-
-### Method 1 — Using `-e` flag with `docker run`
-
-```bash
-# Single variable
+Single variable:
 docker run -e MY_VAR=value httpd env
 
-# Named container with env variable
+Named container with env:
 docker run -it -e MY_NAME=Bhoomi ubuntu bash
+Inside: echo $MY_NAME = Bhoomi
 
-# Inside container:
-echo $MY_NAME   # → Bhoomi
-```
+Note: MY_NAME only inside container, host not affected
 
-> **Note:** `MY_NAME` exists **only inside the container** — host system is NOT affected.
+Multiple env variables:
+docker run -e APP_ENV=production -e APP_VERSION=1.0 nginx
 
----
+MySQL required variables:
+docker run -d -e MYSQL_ROOT_PASSWORD=root123 -e MYSQL_DATABASE=college -e MYSQL_USER=admin -e MYSQL_PASSWORD=admin123 mysql:8
 
-### Method 2 — Multiple Environment Variables
+Without these MySQL container fails to start
 
-```bash
-docker run \
-  -e APP_ENV=production \
-  -e APP_VERSION=1.0 \
-  nginx
-```
-
----
-
-### Method 3 — MySQL Example (required vars)
-
-```bash
-docker run -d \
-  -e MYSQL_ROOT_PASSWORD=root123 \
-  -e MYSQL_DATABASE=college \
-  -e MYSQL_USER=admin \
-  -e MYSQL_PASSWORD=admin123 \
-  mysql:8
-```
-
-> Without these variables, the MySQL container **will fail to start**.
-
----
-
-### Method 4 — Passing from Host System
-
-```bash
-# Step 1: Set variable on host
+Passing from host system:
 export APP_PORT=8080
 export API_KEY=12345
-
-# Step 2: Pass to container (Docker reads from host env)
 docker run -e APP_PORT nginx env
-```
 
----
+Docker reads from host env
 
-### Method 5 — Using `--env-file` (Clean & Professional)
+Method 2: Using --env-file (Clean & Professional)
 
-Create a `.env` file:
-```
+Create .env file:
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=secret
 APP_ENV=production
-```
 
-Run container with the file:
-```bash
+Run container with file:
 docker run --env-file .env myapp
-```
 
-> Best practice for **production** — keeps secrets out of command history.
+Best practice for production - keeps secrets out of command history
 
----
-
-## Checking Environment Variables Inside a Container
-
-```bash
-# Open container terminal
-docker exec -it <container_id> bash
-
-# View all env variables
-env
-
-# Check specific variable
-echo $MY_NAME
-echo $APP_ENV
+Checking env variables inside container:
+docker exec -it <id> bash = open terminal
+env = view all env variables
+echo $MY_NAME = check specific variable
+echo $APP_ENV = check another
 ```
 
 ---

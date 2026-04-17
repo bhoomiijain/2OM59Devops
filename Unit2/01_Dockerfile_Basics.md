@@ -1,135 +1,92 @@
-# 1. Dockerfile & Image Creation — Full Guide
+# Dockerfile Basics
 
-## What is a Dockerfile?
+Dockerfile = plain text file with step-by-step instructions to automatically build Docker image. Docker reads top to bottom. Each instruction = one layer.
 
-A **Dockerfile** is a plain text file with step-by-step instructions to **automatically build a Docker image**.
+Build context = folder passed to docker build. All contents sent to daemon.
 
-> Docker reads instructions top to bottom — each instruction creates one image layer.
-
----
-
-## Build Context & .dockerignore
-
-**Build context** = the folder you pass to `docker build` (all its contents are sent to the Docker daemon).
-
-**.dockerignore** file = tells Docker what to **exclude** from the build context (like `.gitignore`).
-
-```
-# .dockerignore example
+.dockerignore = exclude files from build context (like .gitignore)
+Example:
 node_modules/
 *.log
 .env
 __pycache__/
 .git
-```
 
----
+Core Dockerfile Instructions:
+- FROM: base image. Example: FROM nginx:alpine
+- RUN: run command during build. Example: RUN npm install
+- COPY: copy files from host to image. Example: COPY app.js /app/
+- ADD: like COPY + supports URLs & tar. ADD archive.tar.gz /app/
+- CMD: default command when container starts (overridable). CMD ["node", "app.js"]
+- ENTRYPOINT: fixed executable (not overridable). ENTRYPOINT ["nginx"]
+- WORKDIR: set working directory. WORKDIR /app
+- ENV: set environment variable. ENV PORT=3000
+- EXPOSE: document port app uses. EXPOSE 80
+- VOLUME: create mount point. VOLUME ["/data"]
 
-## Core Dockerfile Instructions
+CMD vs ENTRYPOINT:
+- CMD: can be overridden by docker run. Use for default command
+- ENTRYPOINT: cannot override. Use for fixed executable
 
-| Instruction | Purpose | Example |
-|-------------|---------|---------|
-| `FROM` | Base image | `FROM nginx:alpine` |
-| `RUN` | Run command during build | `RUN npm install` |
-| `COPY` | Copy files from host to image | `COPY app.js /app/` |
-| `ADD` | Like COPY + supports URLs & tar extraction | `ADD archive.tar.gz /app/` |
-| `CMD` | Default command when container starts (overridable) | `CMD ["node", "app.js"]` |
-| `ENTRYPOINT` | Fixed executable (not overridable) | `ENTRYPOINT ["nginx"]` |
-| `WORKDIR` | Set working directory inside container | `WORKDIR /app` |
-| `ENV` | Set environment variable in image | `ENV PORT=3000` |
-| `EXPOSE` | Document which port the app uses | `EXPOSE 80` |
-| `VOLUME` | Create a mount point | `VOLUME ["/data"]` |
+Image Layering:
+Each instruction = one layer. Layers cached - Docker skips rebuilding unchanged.
 
-### CMD vs ENTRYPOINT
+Instruction        Layer
+FROM nginx:alpine → Layer 1 (base OS)
+COPY index.html  → Layer 2
+COPY default.conf → Layer 3
+EXPOSE 80         → Layer 4 (metadata)
 
-| | CMD | ENTRYPOINT |
-|--|-----|-----------|
-| Can be overridden by `docker run`? | ✅ Yes | ❌ No (use `--entrypoint` flag) |
-| Use for | Default command/args | Fixed executable |
+Best practice: put instructions that change least often at top so cache reused on rebuilds.
 
----
+Project 1: Custom Nginx App
 
-## Image Layering in Build
+Files:
+- index.html: HTML page
+- default.conf: Nginx config
+- Dockerfile: build instructions
 
-Each instruction = one layer. Layers are **cached** — Docker skips rebuilding unchanged layers.
-
-```
-Instruction          Layer
-─────────────────────────────────
-FROM nginx:alpine  → Layer 1 (base OS)
-COPY index.html    → Layer 2
-COPY default.conf  → Layer 3
-EXPOSE 80          → Layer 4 (metadata only)
-```
-
-> **Best practice:** Put instructions that change least often at the top (e.g., `FROM`, `RUN apt install`) so cache is used for them on rebuilds.
-
----
-
-## Project 1 — Custom Nginx App
-
-### Files needed:
-
-**index.html**
-```html
+index.html:
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Medium Level Docker App</title>
+    <title>Docker App</title>
 </head>
 <body>
-    <h1>Welcome to My Custom Docker Nginx App</h1>
-    <p>This is a medium-level Docker project.</p>
+    <h1>Welcome to My Docker Nginx App</h1>
 </body>
 </html>
-```
 
-**default.conf**
-```nginx
+default.conf:
 server {
     listen 80;
-    server_name localhost;
-
     location / {
         root /usr/share/nginx/html;
         index index.html;
     }
 }
-```
 
-**Dockerfile**
-```dockerfile
+Dockerfile:
 FROM nginx:alpine
-
 COPY index.html /usr/share/nginx/html/index.html
 COPY default.conf /etc/nginx/conf.d/default.conf
-
 EXPOSE 80
-```
 
-### Build & Run:
-```bash
+Build & Run:
 mkdir nginx-app
 cd nginx-app
-# (create the 3 files above)
-
-# Build the image
+(create 3 files)
 docker build -t custom-nginx:v1 .
-
-# Run the container
 docker run -d -p 8080:80 --name nginx-container custom-nginx:v1
 
-# Open browser → http://localhost:8080
-```
+Project 2: Node.js Express App
 
----
+Files:
+- app.js: Node code
+- package.json: dependencies
+- Dockerfile: build instructions
 
-## Project 2 — Node.js Express App
-
-### Files needed:
-
-**app.js**
-```javascript
+app.js:
 const express = require("express");
 const app = express();
 
@@ -140,10 +97,8 @@ app.get("/", (req, res) => {
 app.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
 });
-```
 
-**package.json**
-```json
+package.json:
 {
   "name": "node-docker-app",
   "version": "1.0.0",
@@ -152,10 +107,8 @@ app.listen(3000, "0.0.0.0", () => {
     "express": "^4.18.2"
   }
 }
-```
 
-**Dockerfile**
-```dockerfile
+Dockerfile:
 FROM node:18-alpine
 WORKDIR /app
 COPY package.json .
@@ -163,41 +116,20 @@ RUN npm install
 COPY app.js .
 EXPOSE 3000
 CMD ["node", "app.js"]
-```
 
-### Build & Run:
-```bash
+Build & Run:
 mkdir node-app
 cd node-app
-# (create the 3 files above)
-
-# Build
+(create 3 files)
 docker build -t node-demo:v1 .
-
-# Run
 docker run -d -p 3000:3000 --name node-container node-demo:v1
-
 docker ps
-# Open browser → http://localhost:3000
-# Expected output: Docker Node App Running!
-```
+Open browser: http://localhost:3000
 
----
-
-## docker build Process — Step by Step
-
-```bash
-# Basic build (. = current folder as build context)
-docker build -t myapp:v1 .
-
-# Build from specific Dockerfile
-docker build -f Dockerfile.prod -t myapp:prod .
-
-# Force rebuild ignoring cache
-docker build --no-cache -t myapp:v1 .
-```
-
-**What happens:**
+docker build commands:
+docker build -t myapp:v1 . (. = current folder)
+docker build -f Dockerfile.prod -t myapp:prod . (specific Dockerfile)
+docker build --no-cache -t myapp:v1 . (ignore cache, rebuild)
 1. Docker reads Dockerfile line by line
 2. Each instruction creates a layer
 3. Unchanged layers → served from cache (fast)

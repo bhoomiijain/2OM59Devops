@@ -1,153 +1,77 @@
-# 2. Docker Networking — Complete Guide
+# Docker Networking
 
-## Why Docker Networking?
-
-By default, containers are **isolated** — they can't talk to each other or the outside world without configuration.
-
-Docker networking allows:
-- Containers to communicate with each other
-- Containers to be reached from browser/host
+Why Docker Networking?
+By default containers isolated - can't talk to each other or outside world without setup. Docker networking allows:
+- Containers communicate with each other
+- Containers reached from browser/host
 - Controlled isolation between services
-- DNS-based service discovery (by container name)
+- DNS-based service discovery by container name
 
----
+Default Networks (auto-created by Docker):
+docker network ls shows:
+- bridge: default network when you run container
+- host: container network stack shared with host
+- none: no network access
 
-## Default Networks (Auto-created by Docker)
+A. Bridge Network (Default)
+- Default when you run any container
+- Containers on same bridge can communicate via IP
+- Best for standalone containers on single host
+- Custom bridge networks support DNS by name
 
-```bash
-docker network ls
-# NETWORK ID   NAME      DRIVER    SCOPE
-# abc123       bridge    bridge    local
-# def456       host      host      local
-# ghi789       none      null      local
-```
-
----
-
-## A. Bridge Network (Default)
-
-- **Default** network when you run any container
-- Containers on the same bridge can communicate **via IP**
-- Best for **standalone containers on a single host**
-- Custom bridge networks also support **DNS by name**
-
-```bash
-# List networks
-docker network ls
-
-# Inspect the default bridge
-docker network inspect bridge
-
-# Create a CUSTOM bridge network
-docker network create my_bridge_net
-
-# Run containers on custom bridge
-docker run -d --name container1 --network my_bridge_net nginx
+Commands:
+docker network ls = list networks
+docker network inspect bridge = inspect default bridge
+docker network create my_bridge_net = create custom bridge
+docker run -d --name container1 --network my_bridge_net nginx = run on custom bridge
 docker run -d --name container2 --network my_bridge_net alpine sleep 300
+docker exec -it container2 ping container1 = test connectivity
 
-# Test: container2 can ping container1 by NAME
-docker exec -it container2 ping container1
-```
+Important: DNS by container name only works on custom bridges, not default bridge.
 
-> **Important:** DNS by container name **only works on custom (user-defined) bridges**, not on the default `bridge` network.
+B. Host Network
+- Container shares host machine network stack directly
+- No separate IP for container
+- No need for -p port mapping - app listens on host ports directly
+- Linux only (not Docker Desktop Windows/Mac)
+- Faster but less isolation
 
----
-
-## B. Host Network
-
-- Container **shares the host machine's network stack directly**
-- No separate IP address for container
-- No need for `-p` port mapping — app listens on host ports directly
-- **Linux only** (not supported on Docker Desktop for Windows/Mac)
-- Faster performance, but **less isolation**
-
-```bash
 docker run -d --network host nginx
-curl http://localhost      # works directly — no port mapping needed
-```
+curl http://localhost = works directly, no mapping needed
 
----
-
-## C. Overlay Network
-
-- Used in **Docker Swarm** (multi-host setup)
-- Connects containers running on **different physical/virtual hosts**
+C. Overlay Network
+- Used in Docker Swarm (multi-host setup)
+- Connects containers on different physical/virtual hosts
 - Encrypted by default
 
-```bash
-# Initialize Docker Swarm first
-docker swarm init
+docker swarm init = initialize Swarm first
+docker network create -d overlay my_overlay = create overlay
 
-# Create overlay network
-docker network create -d overlay my_overlay
+D. None Network
+- Container has zero network access
+- Maximum isolation
 
-# Deploy a service using overlay
-docker service create --name web --network my_overlay -p 8080:80 nginx
-```
-
----
-
-## D. None Network
-
-- Container has **zero network access**
-- Maximum isolation, no connectivity at all
-
-```bash
 docker run --network none ubuntu
-```
 
----
+DNS Inside Docker
+Docker has built-in DNS server for user-defined networks. Containers on same custom network reach each other by container name. Works only on user-defined bridge networks (not default).
 
-## DNS Inside Docker
+docker network create app_net = create custom network
+docker run -d --name backend --network app_net nginx = run backend on network
+docker run -it --name client --network app_net alpine sh = run client on network
+Inside client: ping backend = works because Docker DNS resolves name
 
-Docker has a **built-in DNS server** for user-defined networks.
+Port Mapping (Host ↔ Container)
+Without -p containers not accessible from browser or host.
 
-- Containers on the same **custom network** can reach each other by **container name**
-- Works **only** on user-defined bridge networks (not the default bridge)
-
-```bash
-# Create a custom network
-docker network create app_net
-
-# Run two containers on it
-docker run -d --name backend --network app_net nginx
-docker run -it --name client --network app_net alpine sh
-
-# Inside client container — reach backend by NAME:
-ping backend
-# → This works because Docker DNS resolves "backend" to its IP
-```
-
----
-
-## Port Mapping (Host ↔ Container)
-
-Without `-p`, containers are **not accessible from browser or host**.
-
-```
 Syntax: -p <HOST_PORT>:<CONTAINER_PORT>
-```
 
-```bash
-# Map host 8080 → container 80
-docker run -d -p 8080:80 --name mynginx nginx
+docker run -d -p 8080:80 --name mynginx nginx = map host 8080 to container 80
+docker run -d -p 8080:80 -p 443:443 nginx = multiple ports
+docker run -d -p 3307:3306 --name mysql-test -e MYSQL_ROOT_PASSWORD=root123 mysql:8 = MySQL: host 3307 to container 3306
 
-# Multiple ports
-docker run -d -p 8080:80 -p 443:443 nginx
-
-# MySQL: host 3307 → container 3306
-docker run -d -p 3307:3306 \
-  --name mysql-test \
-  -e MYSQL_ROOT_PASSWORD=root123 \
-  mysql:8
-```
-
-**Internal flow:**
-```
+Internal flow:
 Browser → localhost:8080 → Docker Host → Container:80 → Nginx
-```
-
----
 
 ## Linking Containers (Legacy — Deprecated)
 

@@ -1,55 +1,28 @@
 # DevOps Basics & Why Docker?
 
-## What is DevOps?
-Dev + Ops = working together (not separately)
+DevOps = Dev + Ops working together, not separately. Get code to production faster with collaboration and automation of build, test, deploy.
 
-- CODE → PROD faster
-- Devs and Ops team collaborate
-- Automate stuff (build, test, deploy) - dont waste time
+Before: monolithic apps on servers that get really heavy with VMs. Slow startup, "works on my machine" problem kills everything when you try to go live.
 
-## Why Docker/Containers?
+Now: containers + microservices. Same image runs everywhere. Seconds to start. Less resources. Actually portable.
 
-**Before:** 
-- Big apps on server (monolithic)
-- As it grows → split into small parts
-- VMs very slow and heavy
-- "Works on my machine" problem → shipping to production = disaster
+Course INT332 units:
+- Containers basics
+- Images, Docker, Dockerfile
+- Docker Compose
+- Maven
+- GitHub Actions (CI)
+- Jenkins (CI/CD)
 
-**Now = Microservices + Containers**
-- Same image = runs everywhere
-- Startup in seconds (not minutes like VMs)
-- Uses less resources
-- Portable!!
+Marks breakdown: Project 30, Git repo 30, Minor 5, AT2 45
 
-## Course - INT332
-**Units:**
-1. Containers basics
-2. Images, Docker, Dockerfile  
-3. Docker Compose
-4. Maven
-5. GitHub Actions (CI)
-6. Jenkins (CI/CD)
+Need Docker Desktop or AWS to run stuff
 
-**Marks:**
-- Project 30 marks (need to present + code)
-- Git repo 30 marks (gotta maintain properly)
-- Minor stuff 5 marks
-- AT2 = 45 marks
-
-**Need:** Docker Desktop or AWS
-
----
-
-## Key Terminology
-
-| Term | Meaning |
-|------|---------|
-| **Container** | Lightweight isolated environment to run an app |
-| **Image** | Blueprint/template to create containers |
-| **Docker** | Most popular containerization platform |
-| **DevOps** | Culture + tools for fast, reliable software delivery |
-| **CI/CD** | Continuous Integration / Continuous Deployment |
-
----
+Key terms:
+- Container = lightweight isolated environment for apps
+- Image = blueprint/template for containers
+- Docker = popular containerization tool
+- DevOps = culture + tools for fast delivery
+- CI/CD = continuous integration/deployment
 
 

@@ -1,240 +1,92 @@
-# 8. Basic Docker Commands
+# Basic Docker Commands
 
-## Image Commands
+Image Commands:
+docker --version = check Docker version
+docker info = detailed Docker info
+docker pull ubuntu = download image
+docker images = list downloaded images
+docker history httpd = view image history
+docker rmi ubuntu = delete image
+docker rmi -f <id> = force delete
 
-```bash
-# Check Docker version
-docker --version
+Container Lifecycle:
+docker run ubuntu = create + run container
+docker run -it ubuntu /bin/bash = run with interactive terminal
+docker run -d nginx = run background (detached)
+docker run -d -p 8080:80 --name mynginx nginx = run with name + port
+docker run --rm ubuntu echo "Hello" = auto-remove after stop
+docker ps = list running containers
+docker ps -a = list all containers (running + stopped)
+docker start <id> = start stopped container
+docker stop <id> = stop running container
+docker restart <id> = restart container
+docker pause <id> = pause container
+docker rm <id> = remove container
+docker rm -f <id> = force remove even if running
 
-# Get detailed Docker info
-docker info
+Container Interaction:
+docker exec -it <id> bash = open bash terminal inside container
+docker logs <id> = show container output
+docker inspect <id> = detailed config in JSON
+docker stats = live CPU + memory usage
+docker top <id> = running processes inside
 
-# Pull an image from Docker Hub
-docker pull ubuntu
-docker pull nginx
-docker pull httpd
-docker pull mysql:8
-
-# List all downloaded images
-docker images
-
-# View history of an image
-docker history httpd
-
-# Delete an image
-docker rmi ubuntu
-
-# Force delete (even if used)
-docker rmi -f <image_id>
-
-# Delete by image id
-docker rmi <image_id>
-```
-
----
-
-## Container Lifecycle Commands
-
-```bash
-# Create + Run a container
-docker run ubuntu
-
-# Run with interactive terminal
-docker run -it ubuntu /bin/bash
-
-# Run in background (detached mode)
-docker run -d nginx
-
-# Run with name + port mapping
-docker run -d -p 8080:80 --name mynginx nginx
-
-# Run with auto-remove after stop
-docker run --rm ubuntu echo "Hello"
-
-# List running containers
-docker ps
-
-# List ALL containers (running + stopped)
-docker ps -a
-
-# Start a stopped container
-docker start <container_id/name>
-
-# Stop a running container
-docker stop <container_id/name>
-
-# Restart a container
-docker restart <container_id/name>
-
-# Pause a container
-docker pause <container_id/name>
-
-# Remove a container
-docker rm <container_id>
-
-# Force remove (even if running)
-docker rm -f <container_id/name>
-```
-
----
-
-## Container Interaction Commands
-
-```bash
-# Open bash terminal inside a running container
-docker exec -it <container_id> bash
-
-# Show container output logs
-docker logs <container_id>
-
-# Show detailed config in JSON format
-docker inspect <container_id>
-
-# Show live CPU + memory usage
-docker stats
-
-# Show running processes inside container
-docker top <container_id>
-```
-
----
-
-## Port Mapping (`-p` flag)
-
-```
+Port Mapping flag -p:
 -p <HOST_PORT>:<CONTAINER_PORT>
-```
-
-```bash
-# Map host port 8080 to container port 80
 docker run -d -p 8080:80 --name mynginx nginx
+Maps host port 8080 to container port 80
+Access: localhost:8080 in browser
 
-# Access: open browser → localhost:8080
-# Flow: Browser → localhost:8080 → Docker Host → Container:80 → Nginx
-```
+docker run Flags Summary:
+-d = detached (background)
+-it = interactive + tty
+--name = give container name
+--rm = auto-remove on exit
+-p = port mapping, -e = environment variable, -v = volume mount
 
----
+Volume Commands:
+docker volume create myvolume = create volume
+docker volume ls = list all volumes
+docker volume inspect myvolume = show details
+docker volume rm myvolume = delete
 
-## docker run Flags Summary
+Network Commands:
+docker network ls = list all networks
+docker network create mynetwork = create custom network
+docker network inspect mynetwork = inspect network
+docker network rm mynetwork = remove network
 
-| Flag | Full Form | Meaning |
-|------|-----------|---------|
-| `-d` | detached | Run container in background |
-| `-it` | interactive + tty | Open interactive terminal |
-| `--name` | — | Give container a name |
-| `--rm` | — | Auto-remove container when it exits |
-| `-p` | publish | Map host port to container port |
-| `-e` | env | Set environment variable |
-| `-v` | volume | Mount a host directory into container |
+Cleanup:
+docker stop $(docker ps -aq) = stop all running containers
+docker rm $(docker ps -aq) = remove all containers
+docker rmi $(docker images -q) = delete all images
+docker system prune -a = clean unused containers/images/networks
+docker system prune -a --volumes = clean everything including volumes
 
----
+Examples:
 
-## Volume Commands
-
-```bash
-# Create a persistent storage volume
-docker volume create myvolume
-
-# List all volumes
-docker volume ls
-
-# Show volume details (& mounting info)
-docker volume inspect myvolume
-
-# Delete a volume
-docker volume rm myvolume
-```
-
----
-
-## Network Commands
-
-```bash
-# List networks (shows ID, name, driver, scope)
-docker network ls
-
-# Create a custom network
-docker network create mynetwork
-
-# Inspect a network
-docker network inspect mynetwork
-
-# Remove a network
-docker network rm mynetwork
-```
-
----
-
-## Cleanup Commands
-
-```bash
-# Stop ALL running containers
-docker stop $(docker ps -aq)
-
-# Remove ALL containers
-docker rm $(docker ps -aq)
-
-# Delete ALL images
-docker rmi $(docker images -q)
-
-# Clean unused containers, images, networks
-docker system prune -a
-
-# Nuclear clean (includes volumes too)
-docker system prune -a --volumes
-```
-
----
-
-## Practical Examples from Class
-
-### Example 1 — Nginx with port mapping
-```bash
+Nginx with port mapping:
 docker pull nginx
 docker run -d -p 8080:80 --name mynginx nginx
 docker ps
 docker stop mynginx
 docker start mynginx
 docker rm -f mynginx
-docker rmi nginx
-```
 
-### Example 2 — Ubuntu interactive
-```bash
+Ubuntu interactive:
 docker run -it ubuntu bash
-# Inside container:
-echo "Hello from container"
-touch /data/hello.txt
-exit
-```
+Inside: echo "Hello from container"
+Inside: exit
 
-### Example 3 — Apache (httpd)
-```bash
+Apache (httpd):
 docker pull httpd
 docker run -d --name my-apache -p 8080:80 httpd
-# Modify the web page inside container:
-docker exec -it my-apache bash -c "echo '<h1>Hello from Docker Apache!</h1>' > /usr/local/apache2/htdocs/index.html"
+docker exec -it my-apache bash -c "echo '<h1>Hello!</h1>' > /usr/local/apache2/htdocs/index.html"
 curl http://localhost:8080
-docker stop my-apache
-docker rm my-apache
-```
 
-### Example 4 — MySQL with environment variables
-```bash
-docker run -d \
-  -p 3307:3306 \
-  --name mysql-test \
-  -e MYSQL_ROOT_PASSWORD=root123 \
-  -e MYSQL_DATABASE=college \
-  -e MYSQL_USER=admin \
-  -e MYSQL_PASSWORD=admin123 \
-  mysql:8
-
-# Connect to MySQL inside container
+MySQL with env variables:
+docker run -d -p 3307:3306 --name mysql-test -e MYSQL_ROOT_PASSWORD=root123 -e MYSQL_DATABASE=college mysql:8
 docker exec -it mysql-test bash
-mysql -h 127.0.0.1 -P 3306 -u root -p
-```
-
----
+mysql -h 127.0.0.1 -u root -p
 
 

@@ -1,153 +1,94 @@
-# 3. Docker Storage — Volumes, Bind Mounts & CoW
+# Docker Storage
 
-## The Problem
+The Problem:
+Containers emphemeral - all data inside lost when container removed.
 
-Containers are **ephemeral** — all data inside is lost when a container is removed.
+docker rm mycontainer = all data gone
 
-```bash
-docker rm mycontainer   # all data inside → gone ❌
-```
+To persist data across container restarts/deletions:
+1. Volumes - managed by Docker
+2. Bind Mounts - managed by you
 
-To persist data across container restarts and deletions, Docker provides:
-1. **Volumes** — managed by Docker
-2. **Bind Mounts** — managed by you (host path)
+1. Docker Volumes
+Volumes managed entirely by Docker. Stored outside container filesystem.
 
----
+Default storage: /var/lib/docker/volumes/
 
-## 1. Docker Volumes
+Why use volumes?
+- Data persists after container deleted
+- Can share between multiple containers
+- Easier backup and migrate
+- Best for production
 
-Volumes are **managed entirely by Docker**, stored outside the container filesystem.
+Commands:
+docker volume create myvolume = create
+docker volume ls = list all
+docker volume inspect myvolume = inspect (see mount path, driver, date)
+docker volume rm myvolume = remove specific
+docker volume prune = remove all unused
 
-**Default storage location on host:** `/var/lib/docker/volumes/`
+Using volume with container:
+Syntax: docker run -v <volume_name>:<path_inside_container> image
 
-### Why use volumes?
-- Data persists after container is deleted ✅
-- Can be shared between multiple containers ✅
-- Easier to back up and migrate ✅
-- Best for **production** ✅
+Example: docker run -d -v myvolume:/app/data --name mycontainer ubuntu
 
-### Volume Commands
-
-```bash
-# Create a volume
-docker volume create myvolume
-
-# List all volumes
-docker volume ls
-
-# Inspect (see mount path, driver, creation date)
-docker volume inspect myvolume
-
-# Remove a specific volume
-docker volume rm myvolume
-
-# Remove ALL unused volumes
-docker volume prune
-```
-
-### Using a Volume with a Container
-
-```bash
-# Syntax
-docker run -v <volume_name>:<path_inside_container> image
-
-# Example — attach myvolume to /app/data inside Ubuntu
-docker run -d -v myvolume:/app/data --name mycontainer ubuntu
-
-# Write data into it
+Write data:
 docker exec -it mycontainer sh -c "echo 'Hello Volume' > /app/data/test.txt"
 
-# Remove container
+Remove container:
 docker rm -f mycontainer
 
-# Run NEW container with same volume — data is still there!
+Run NEW container with same volume - data still there:
 docker run -it -v myvolume:/app/data ubuntu sh
-cat /app/data/test.txt   # → Hello Volume ✅
-```
+cat /app/data/test.txt = Hello Volume
 
----
+2. Bind Mounts
+Bind mount links specific folder on host directly into container.
 
-## 2. Bind Mounts
+Key difference: you specify exact host path - Docker doesn't manage.
 
-A **bind mount** links a specific folder on your **host machine** directly into the container.
+Why use?
+- Great for development (live code editing without rebuild)
+- Changes on host instantly visible inside
+- Changes inside instantly visible on host
 
-**Key difference from volumes:** You specify the exact host path — Docker doesn't manage it.
+Syntax: docker run -v <host_path>:<container_path> image
 
-### Why use bind mounts?
-- Great for **development** (live code editing without rebuilding)
-- Changes on host are **instantly visible** inside container
-- Changes inside container are **instantly visible** on host
+Linux: docker run -d -v $(pwd)/html:/usr/share/nginx/html -p 8080:80 nginx
 
-```bash
-# Syntax
-docker run -v <host_path>:<container_path> image
+Windows: docker run -it -v C:\app\data:/data --name my_app ubuntu /bin/bash
 
-# Linux example
-docker run -d \
-  -v $(pwd)/html:/usr/share/nginx/html \
-  -p 8080:80 \
-  nginx
+Volumes vs Bind Mounts:
+- Managed by Docker: volumes yes, bind mounts no
+- Best for production: volumes yes, bind mounts no
+- Host path dependency: volumes no, bind mounts yes
+- Performance: both good
+- Portability: volumes high, bind mounts low
+- Backup/migrate: volumes easier, bind mounts manual
 
-# Windows example
-docker run -it \
-  --name my_app \
-  -e APP_ENV=production \
-  -v C:\app\data:/data \
-  ubuntu /bin/bash
-```
+3. Copy-on-Write (CoW)
+Docker images use layered filesystem (OverlayFS).
 
----
+Top: Container writable layer (thin, unique per container)
+Middle: App layer (read-only, shared)
+Middle: Dependencies layer (read-only, shared)
+Bottom: Base OS layer (read-only, shared)
 
-## Volumes vs Bind Mounts
+How CoW works:
+1. Container reads file: read from shared read-only layer (fast)
+2. Container modifies file: Docker copies it up to writable layer, then modifies copy
+3. Original image layers never touched
+4. Multiple containers from same image = one copy of image layers shared in storage
 
-| Feature | Volume | Bind Mount |
-|---------|--------|------------|
-| Managed by Docker | ✅ | ❌ (you manage) |
-| Best for production | ✅ | ⚠️ Dev only |
-| Host path dependency | ❌ | ✅ (tied to host path) |
-| Performance | Good | Good |
-| Portability | High | Low |
-| Backup/migrate | Easier | Manual |
+View layers:
+docker history nginx = see all layers
+docker info | grep "Storage Driver" = check driver (usually overlay2 on Linux)
 
----
+Example MySQL with volume:
+docker volume create mysql_data = create volume
+docker run -d --name mysql_db -e MYSQL_ROOT_PASSWORD=root123 -v mysql_data:/var/lib/mysql mysql:8
 
-## 3. Copy-on-Write (CoW) Mechanism
-
-Docker images use a **layered filesystem** (OverlayFS).
-
-```
-┌────────────────────┐  ← Container writable layer (thin, unique per container)
-├────────────────────┤  ← App layer (read-only, shared)
-├────────────────────┤  ← Dependencies layer (read-only, shared)
-└────────────────────┘  ← Base OS layer (read-only, shared)
-```
-
-**How CoW works:**
-1. Container **reads** a file → read from the (shared) read-only layer → fast
-2. Container **modifies** a file → Docker first **copies it up** to the writable layer → then modifies the copy
-3. Original image layers are **never touched**
-4. Multiple containers from same image = **one copy of image layers** shared in storage
-
-```bash
-# See all layers of an image
-docker history nginx
-
-# Check which storage driver Docker is using
-docker info | grep "Storage Driver"
-# → overlay2  (most common on Linux)
-```
-
----
-
-## 4. Backing Data on Host (MySQL Example)
-
-```bash
-# Create a named volume for MySQL data
-docker volume create mysql_data
-
-# Run MySQL with volume attached
-docker run -d \
-  --name mysql_db \
+Data persists even if container deleted.
   -e MYSQL_ROOT_PASSWORD=root \
   -v mysql_data:/var/lib/mysql \
   mysql:8
