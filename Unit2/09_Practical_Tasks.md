@@ -1,103 +1,106 @@
 # Unit 2 Docker Practical Tasks (INT332)
 
-TASK 1: Basic Docker Commands and Image Pulling
+## TASK 1: Basic Docker Commands and Image Pulling
 
-Objective: Master docker version, info, history, pull commands
+**Objective** : Master docker version, info, history, pull commands
 
-Questions:
+**Questions**:
 1. What is your installed Docker version and build number?
 2. How many containers are currently running on your system?
 3. What storage driver does your Docker use?
 4. Pull Ubuntu 22.04 image. What is the image ID?
 5. View the layers of nginx:alpine image using history command.
 
-Commands to Execute:
-
+**Commands to Execute**:
+```bash
 docker --version
 docker info
 docker pull ubuntu:22.04
 docker images
 docker history nginx:alpine
 docker inspect ubuntu:22.04
+```
 
-Expected Outcomes:
+**Expected Outcomes**:
 - Know your Docker version
 - Understand Docker daemon info structure
 - Image successfully pulled
 - Can view image layers
 - Understand image metadata
 
----
+## TASK 2: Running Containers with Basic Options
 
-TASK 2: Running Containers with Basic Options
+**Objective** : Learn docker run with various options
 
-Objective: Learn docker run with various options
-
-1. Run Ubuntu container in interactive mode and type commands inside:
-
+**Scenario 1**: Interactive mode
+```bash
 docker run -it ubuntu bash
-Inside container:
+# Inside container:
 echo "Hello Docker"
 ls /
-exit
+exit  # Quit container
+```
 
 Verify: container stopped
 
-2. Run Nginx in detached mode:
-
+**Scenario 2**: Detached mode
+```bash
 docker run -d --name webserver nginx
+```
 
 Verify: docker ps (showing running container)
 
-3. Run with custom name:
-
+**Scenario 3**: Custom name
+```bash
 docker run -d --name my-app nginx
+```
 
 Verify: docker ps (showing custom name)
 
-4. Run with automatic cleanup (--rm):
-
+**Scenario 4**: Automatic cleanup
+```bash
 docker run --rm -it ubuntu bash
-Inside: echo "This container will auto-delete"
+# Inside: echo "This container will auto-delete"
 exit
+```
 
 Verify: docker ps -a (container not in history)
 
-Expected Outcomes:
+**Expected Outcomes**:
 - Understand interactive vs detached modes
 - Custom naming containers
 - Container lifecycle
 - Auto-cleanup mechanism
 
----
+## TASK 3: Port Mapping (-p flag)
 
-TASK 3: Port Mapping (-p flag)
+**Objective** : Expose container ports to host
 
-Objective: Expose container ports to host
-
-1. Run Nginx without port mapping:
-
+**Scenario 1**: No port mapping
+```bash
 docker run -d --name nginx1 nginx
+# Try accessing: http://localhost:80
+# Result: Connection refused
+```
 
-Try accessing: http://localhost:80
-Result: Connection refused
-
-2. Run Nginx WITH port mapping:
-
+**Scenario 2**: WITH port mapping
+```bash
 docker run -d -p 8080:80 --name nginx2 nginx
+# Try accessing: http://localhost:8080
+# Result: Nginx home page loads successfully!
+```
 
-Try accessing: http://localhost:8080
-Result: Nginx home page loads successfully!
-
-3. Port mapping multiple ports:
-
+**Scenario 3**: Multiple ports
+```bash
 docker run -d -p 8080:80 -p 8443:443 --name nginx3 nginx
+```
 
 Verify: docker ps (see port mappings)
 
-4. Map different host port:
-
+**Scenario 4**: Different host port
+```bash
 docker run -d -p 9000:80 --name nginx4 nginx
+```
 
 Access: http://localhost:9000
 

@@ -55,49 +55,83 @@ Change container behavior without rebuilding:
 docker run -e WORKERS=5 myapp (5 worker threads)
 docker run -e WORKERS=10 myapp (10 worker threads)
 
-Setting Environment Variables:
+## Setting Environment Variables: Methods
 
-Method 1: Docker run with -e flag
+**Method 1: Docker run with -e flag**
 
+```bash
 docker run -e VARIABLE=value image:tag
+```
 
 Examples:
+```bash
 docker run -e APP_MODE=development ubuntu bash
 docker run -e DB_HOST=localhost -e DB_PORT=5432 myapp
+```
 
 Inside container:
-echo $APP_MODE → outputs: development
-echo $DB_HOST → outputs: localhost
+```bash
+echo $APP_MODE          # outputs: development
+echo $DB_HOST           # outputs: localhost
+```
 
-Method 2: Multiple environment variables
+**Method 2: Multiple environment variables**
 
+```bash
 docker run -e VAR1=val1 -e VAR2=val2 -e VAR3=val3 image:tag
+```
 
 Example:
+```bash
 docker run -d \
   -e MYSQL_ROOT_PASSWORD=root123 \
   -e MYSQL_DATABASE=college \
   -e MYSQL_USER=admin \
   -e MYSQL_PASSWORD=admin123 \
   mysql:8
+```
 
-Without these vars, MySQL fails to start (required configuration).
+Note: Without these vars, MySQL fails to start (required configuration).
 
-Method 3: Pass from host system
+**Method 3: Pass from host system**
 
 On host:
+```bash
 export APP_PORT=8080
+```
 
 In docker run:
-docker run -e APP_PORT myapp
+```bash
+docker run -e APP_PORT myapp  # Container sees: APP_PORT=8080
+```
 
-Container sees: APP_PORT=8080
-
-Method 4: Using --env-file
+**Method 4: Using --env-file**
 
 Create .env file:
+```
 DB_HOST=localhost
 DB_USER=root
+DB_PASSWORD=secret123
+APP_PORT=8080
+```
+
+Run container:
+```bash
+docker run -d --env-file .env myapp
+# All variables from .env file loaded into container
+```
+
+**Method 5: Dockerfile ENV instruction**
+
+```dockerfile
+FROM python:3.11
+ENV NODE_ENV=production
+ENV APP_DEBUG=false
+COPY app.py /app/
+CMD ["python", "/app/app.py"]
+```
+
+When container runs, these vars available.
 DB_PASS=secret
 APP_ENV=production
 
