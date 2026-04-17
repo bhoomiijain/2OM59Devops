@@ -1,6 +1,6 @@
 # GitHub Container Registry (GHCR)
 
-GHCR lets store Docker images directly alongside GitHub source code. Registry URL: ghcr.io
+GHCR lets you store Docker images directly alongside GitHub source code. Registry URL: ghcr.io
 
 What You'll Learn:
 - Build Docker image
